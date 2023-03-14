@@ -28,7 +28,7 @@ app.set('view engine', 'hbs');
 
 db.connect( (error) => {
   if(error) {
-    console.log(error)
+    console.log("MYSQL connection faild \n",error)
   } else {
     console.log("MYSQL Connected...")
   }

@@ -25,8 +25,13 @@
       <div class="card-body">
         <form action="/auth/register" method="POST">
           <div class="form-group">
-            <label for="name">Name</label>
-            <input type="text" class="form-control" id="name" name="name">
+            <label for="firstname">Firstname</label>
+            <input type="text" class="form-control" id="firstname" name="firstname">
+          </div>
+
+          <div class="form-group">
+            <label for="lastname">Lastname</label>
+            <input type="text" class="form-control" id="lastname" name="lastname">
           </div>
 
           <div class="form-group">
@@ -43,6 +48,25 @@
             <label for="passwordConfirm">Confirm Password</label>
             <input type="password" class="form-control" id="passwordConfirm" name="passwordConfirm">
           </div>
+
+          <div class="form-group">
+            <label for="birthDate">Birth date</label>
+            <input type="date" class="form-control" id="birthDate" name="birthdate">
+          </div>
+
+          <div class="form-group">
+            <label for="gender">Birth date</label>
+            <select name="gender" id="gender" class="form-control">
+              <option value="male">male</option>
+              <option value="female">female</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="phoneNum">Phone number</label>
+            <input type="text" class="form-control" id="phoneNum" name="phoneNum">
+          </div>
+
           <div class="form-check">
             <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios" value="student">
             <label class="form-check-label" for="exampleRadios">
@@ -61,7 +85,21 @@
               Register as parent
             </label>
           </div><br>
-          <button type="submit" class="btn btn-primary">Register User</button>
+          {{!-- <div class="form-group">
+            <label for="tier">Tier</label>
+            <select name="tier" id="tier" class="form-control">
+              <option value="Middle school">Middle school</option>
+              <option value="Secondary school">Secondary school</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="domaine">Domaine</label>
+            <select name="domaine" id="domaine" class="form-control">
+              <option value="IT and technology">IT and technology</option>
+              <option value="Science">Science</option>
+            </select>
+          </div> --}}
+          <button type="submit" class="btn btn-primary">Create account</button>
         </form>
       </div>
     </div>

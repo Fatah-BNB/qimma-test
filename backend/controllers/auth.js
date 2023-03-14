@@ -23,10 +23,12 @@ exports.login = async (req, res) => {
     db.query('SELECT * FROM user WHERE user_email = ?', [email], async (error, results) => {
       console.log(results);
       if( !results || !(await bcrypt.compare(password, results[0].user_password)) ) {
+        console.log("prblm")
         res.status(401).render('login', {
           message: 'Email or Password is incorrect'
         })
       } else {
+        console.log(results[0].user_firstname)
         const id = results[0].user_id;
         //create a token for the user
         const token = jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -57,7 +59,7 @@ exports.login = async (req, res) => {
 exports.register = (req, res) => {
   //console.log(req.body);
   const userType = req.body.exampleRadios;
-  const { name, email, password, passwordConfirm } = req.body;
+  const { firstname, lastname, email, password, passwordConfirm, birthdate, gender, phoneNum } = req.body;
 
   db.query('SELECT user_email FROM user WHERE user_email = ?', [email], async (error, results) => {
     if(error) {
@@ -77,9 +79,10 @@ exports.register = (req, res) => {
     let hashedPassword = await bcrypt.hash(password, 8);
     //console.log(hashedPassword);
 
-    db.query('INSERT INTO user SET ?', {user_firstName: name, user_email: email, user_password: hashedPassword}, (error, results) => {
+    db.query('INSERT INTO user (user_email, user_password, user_firstname, user_lastname, user_gender, user_birthDate, user_phoneNumber) values(?,?,?,?,?,?,?)',
+    [email, hashedPassword, firstname, lastname, gender, birthdate, phoneNum], (error, results) => {
       if(error) {
-        console.log(error);
+        console.log("faild to insert into user\n",error);
       } else {  
         const userId = results.insertId;
         db.query('INSERT INTO '+userType+' SET ?', {User_id: userId}, (error, results) => {
