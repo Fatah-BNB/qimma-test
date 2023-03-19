@@ -31,6 +31,16 @@ async function loginController (req, res){
     res.status(402).send({ ok: false, error: error.message });
   });
 }
+function profileController(req, res){
+  const user = req.body;
+  const userType =req.userType
+  if( !user.email || !userType ) {
+    return res.status(400).send({
+      message: 'the token not valide'
+    })
+  };
+  res.status(200).send({ ok: true, user: user, userType: userType });
+}
 async function getAllUsersController (req, res){
   userService.getAllUsers().then((results) => {
     res.status(200).send({ ok: true, user: results });
@@ -39,4 +49,4 @@ async function getAllUsersController (req, res){
     res.status(400).send({ ok: false, error: error.message });
   });
 }
-module.exports = {registerController, loginController, getAllUsersController};
+module.exports = {registerController, loginController, profileController, getAllUsersController};
