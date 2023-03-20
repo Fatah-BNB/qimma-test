@@ -3,11 +3,13 @@ const db = require("./db");
 const authRouter = require('./routes/user-router.js');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const cookieParser = require('cookie-parser');
 dotenv.config({ path: './.env'});
 
 const app = express();
 
 app.use(cors());
+app.use(cookieParser())
 // Parse URL-encoded bodies (as sent by HTML forms)
 app.use(express.urlencoded({ extended: false }));
 // Parse JSON bodies (as sent by API clients)

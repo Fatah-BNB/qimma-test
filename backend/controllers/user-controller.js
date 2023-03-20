@@ -33,14 +33,8 @@ async function loginController (req, res){
   });
 }
 function profileController(req, res){
-  const user = req.body;
-  const userType =req.userType
-  if( !user.email || !userType ) {
-    return res.status(400).send({
-      message: 'the token not valide'
-    })
-  };
-  res.status(200).send({ ok: true, user: user, userType: userType });
+  res.status(200).send({ ok: true});
+ 
 }
 async function getAllUsersController (req, res){
   userService.getAllUsers().then((results) => {
