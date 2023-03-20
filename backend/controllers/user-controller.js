@@ -17,15 +17,16 @@ async function loginController (req, res){
       message: 'Please provide an email and password'
     })
   };
-  await userService.login(user).then((token) => {
+  await userService.login(user).then((results) => {
     const cookieOptions = {
       expires: new Date(
         Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000
       ),
       httpOnly: true
     }
-    res.cookie('jwt', token, cookieOptions );
-    res.status(200).send({ ok: true, token: token });
+    const token = userService.createToken(results[0].user_id)
+    res.cookie('jwt', token, cookieOptions);
+    res.status(200).send(results);
   })
   .catch((error) => {
     res.status(402).send({ ok: false, error: error.message });

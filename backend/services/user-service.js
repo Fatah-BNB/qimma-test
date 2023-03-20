@@ -46,19 +46,20 @@ function login(user) {
         error = new Error("wrong email or password");
         return reject(error);
       } else {
-        const id = results[0].user_id;
-        //create a token for the user
-        const token = jwt.sign({ id }, process.env.JWT_SECRET, {
-          expiresIn: process.env.JWT_EXPIRES_IN
-        });
-        console.log("The token is: " + token);
         if (error) {
           return reject(error);
         }
-        resolve(token);
+        resolve(results);
       }
 
     });
   });
 }
-module.exports = { register, getAllUsers, login };
+
+function createToken(userId){
+  const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN
+  });
+  return token
+}
+module.exports = { register, getAllUsers, login, createToken };
