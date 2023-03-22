@@ -28,7 +28,6 @@ function register(user) {
         resolve(results);
         console.log("register called")
       });
-
     }).then((results) => {
       db.query("INSERT INTO " + user.userType + " SET ?", { User_id: results.insertId }, (error, results) => {
         if (error) {
@@ -39,9 +38,10 @@ function register(user) {
   });
 }
 function login(user) {
-  return new Promise((resolve, reject) => {
+  //retrieve user form db
+  return  new Promise((resolve, reject) => {
     db.query('SELECT * FROM user WHERE user_email = ?', [user.email], async (error, results) => {
-      console.log(results);
+      console.log(results[0]);
       if (!results || !(await bcrypt.compare(user.password, results[0].user_password))) {
         error = new Error("wrong email or password");
         return reject(error);
@@ -51,7 +51,29 @@ function login(user) {
         }
         resolve(results);
       }
-
+    }); 
+    
+  }).then((oldResults)=>{
+    //retrieve user type
+    return new Promise((resolve, reject)=>{
+      let userType = [];
+      db.query('SELECT * FROM student WHERE User_id = ?', [oldResults[0].user_id], (fields, results) => {
+        if (JSON.stringify(results).length > 2){
+          userType.push("student");
+        };
+      });
+      db.query('SELECT * FROM instructor WHERE User_id = ?', [oldResults[0].user_id], (fields, results) => {
+        if (JSON.stringify(results).length > 2){
+          userType.push("instructor");
+        };
+      });
+      db.query('SELECT * FROM parent WHERE User_id = ?', [oldResults[0].user_id], (fields, results) => {
+        if (JSON.stringify(results).length > 2){
+          userType.push("parent");
+        };
+        oldResults[0].userType = userType.toString(); 
+        resolve(oldResults);
+      });
     });
   });
 }
