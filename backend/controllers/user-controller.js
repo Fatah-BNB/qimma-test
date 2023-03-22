@@ -32,6 +32,13 @@ async function loginController (req, res){
     res.status(402).send({ ok: false, error: error.message });
   });
 }
+function logoutController(req, res){
+  res.cookie('jwt', 'logout', {
+    expires: new Date(Date.now() + 1*1000),
+    httpOnly: true
+  });
+  res.status(200).send({message: "cookie is cleard"});
+}
 function profileController(req, res){
   res.status(200).send({ ok: true});
  
@@ -44,4 +51,4 @@ async function getAllUsersController (req, res){
     res.status(400).send({ ok: false, error: error.message });
   });
 }
-module.exports = {registerController, loginController, profileController, getAllUsersController};
+module.exports = {registerController, loginController, profileController, getAllUsersController, logoutController};
