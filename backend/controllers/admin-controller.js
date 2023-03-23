@@ -24,4 +24,13 @@ function loginController (req, res){
       res.status(402).send({ ok: false, error: error.message });
     });
   }
-  module.exports = {loginController};
+
+function getAllUsersController (req, res){
+    adminService.getAllUsers().then((results) => {
+      res.status(200).send({ ok: true, user: results });
+    })
+    .catch((error) => {
+      res.status(400).send({ ok: false, error: error.message });
+    });
+}
+  module.exports = {loginController, getAllUsersController};

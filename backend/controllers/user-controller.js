@@ -49,12 +49,5 @@ function profileController(req, res){
   res.status(200).send({ ok: true});
  
 }
-async function getAllUsersController (req, res){
-  userService.getAllUsers().then((results) => {
-    res.status(200).send({ ok: true, user: results });
-  })
-  .catch((error) => {
-    res.status(400).send({ ok: false, error: error.message });
-  });
-}
-module.exports = {registerController, loginController, profileController, getAllUsersController, logoutController};
+
+module.exports = {registerController, loginController, profileController, logoutController};

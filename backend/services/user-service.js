@@ -1,18 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const db = require('../db');
-
-function getAllUsers() {
-  return new Promise((resolve, reject) => {
-    const query = 'SELECT * FROM user';
-    db.query(query, (error, results) => {
-      if (error) {
-        return reject(error);
-      }
-      resolve(results);
-    })
-  });
-}
 function register(user) {
   console.log("register called")
   return bcrypt.hash(user.password, 8).then((hash) => {
@@ -84,4 +72,4 @@ function createToken(userId){
   });
   return token
 }
-module.exports = { register, getAllUsers, login, createToken };
+module.exports = { register,login, createToken };
