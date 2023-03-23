@@ -1,6 +1,7 @@
 const express = require("express");
 const db = require("./db");
-const authRouter = require('./routes/user-router.js');
+const authRouter = require('./routes/user-router');
+const adminRouter = require('./routes/admin-router')
 const cors = require('cors');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
@@ -26,6 +27,7 @@ db.connect( (error) => {
 //Define Routes
 //app.use('/', require('./routes/pages'));
 app.use('/', authRouter);
+app.use('/admin', adminRouter);
 
 app.listen(5001, () => {
   console.log("Server started on Port 5001");
