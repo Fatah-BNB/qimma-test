@@ -27,7 +27,7 @@ function register(user) {
 }
 function login(user) {
   //retrieve user form db
-  return  new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     db.query('SELECT * FROM user WHERE user_email = ?', [user.email], async (error, results) => {
       console.log(results[0]);
       if (!results || !(await bcrypt.compare(user.password, results[0].user_password))) {
@@ -39,37 +39,37 @@ function login(user) {
         }
         resolve(results);
       }
-    }); 
-    
-  }).then((oldResults)=>{
+    });
+
+  }).then((oldResults) => {
     //retrieve user type
-    return new Promise((resolve, reject)=>{
+    return new Promise((resolve, reject) => {
       let userType = [];
       db.query('SELECT * FROM student WHERE User_id = ?', [oldResults[0].user_id], (fields, results) => {
-        if (JSON.stringify(results).length > 2){
+        if (JSON.stringify(results).length > 2) {
           userType.push("student");
         };
       });
       db.query('SELECT * FROM instructor WHERE User_id = ?', [oldResults[0].user_id], (fields, results) => {
-        if (JSON.stringify(results).length > 2){
+        if (JSON.stringify(results).length > 2) {
           userType.push("instructor");
         };
       });
       db.query('SELECT * FROM parent WHERE User_id = ?', [oldResults[0].user_id], (fields, results) => {
-        if (JSON.stringify(results).length > 2){
+        if (JSON.stringify(results).length > 2) {
           userType.push("parent");
         };
-        oldResults[0].userType = userType.toString(); 
+        oldResults[0].userType = userType.toString();
         resolve(oldResults);
       });
     });
   });
 }
 
-function createToken(userId){
+function createToken(userId) {
   const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN
   });
   return token
 }
-module.exports = { register,login, createToken };
+module.exports = { register, login, createToken };
