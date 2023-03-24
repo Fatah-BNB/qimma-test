@@ -3,20 +3,20 @@ import {useFormik} from "formik"
 import Axios from "axios"
 import {useNavigate} from "react-router-dom"
 import * as Yup from "yup"
-import "./login.css"
+import "./login-admin.css"
 
-export default function LoginForm() {
+export default function AdminLoginForm() {
   const [loginStatus, setLoginStatus] = useState("");
   const [loginErrStatus, setLoginErrStatus] = useState("");
   const login = () => {
-    Axios.post("http://localhost:5000/login", {
+    Axios.post("http://localhost:5000/admin/login", {
       email: formik.values.email,
       password: formik.values.password,
     }).then( (response) => {
       if(response.data.errMsg){
         setLoginErrStatus(response.data.errMsg)
       }else{
-        setLoginStatus(response.data.user_firstName)
+        setLoginStatus(response.data.admin_username)
       }
     })
   }
@@ -41,7 +41,7 @@ export default function LoginForm() {
     return (
         <div className="login-form-container">
           <h2>Login</h2>
-          {loginStatus !== "" ? <p>Welcome : {loginStatus}</p> : <p>{loginErrStatus}</p>}
+          {loginStatus !== "" ? <p>Welcome Admin : {loginStatus}</p> : <p>{loginErrStatus}</p>}
           <form onSubmit={formik.handleSubmit}>
             <div class="form-group">
               <label for="email">Email address</label>
@@ -65,7 +65,7 @@ export default function LoginForm() {
             />
             {formik.touched.password && formik.errors.password ? <p className="error-message">{formik.errors.password}</p> : null}
             </div>
-            <button type="submit">Login</button>
+            <button type="submit">Login as admin</button>
           </form>
         </div>
       );

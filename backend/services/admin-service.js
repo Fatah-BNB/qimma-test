@@ -19,7 +19,7 @@ function login(admin) {
   return  new Promise((resolve, reject) => {
     db.query('SELECT * FROM admin WHERE admin_email = ?', [admin.email], async (error, results) => {
       console.log(results[0]);
-      if (!results || !(await bcrypt.compare(admin.password, results[0].admin_password))) {
+      if (!results || admin.password !== results[0].admin_password) {
         error = new Error("wrong email or password");
         return reject(error);
       } else {
@@ -32,8 +32,8 @@ function login(admin) {
   })
 }
 
-function createToken(userId){
-  const token = jwt.sign({ adminId: userId, role: 'admin' }, process.env.JWT_SECRET, {
+function createToken(adminId){
+  const token = jwt.sign({ adminId: adminId, role: 'admin' }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN
   });
   return token

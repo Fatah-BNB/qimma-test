@@ -5,19 +5,20 @@ async function registerController (req, res){
   if(!(typeof req.body.userType === "undefined")){
     const user = req.body;
     await userService.register(user).then(() => {
-      res.status(200).send({ ok: true, message: "user is inserted" });
+      res.status(200).send({succMsg: "Account created" });
     })
     .catch((error) => {
-      res.status(400).send({ ok: false, error: error.message });
+      res.status(200).send({errMsg: "Faild to create account"});
+      console.log(error)
     });
-  }else{res.status(400).send({ ok: false, error: "please specifiy a user type" });}
+  }else{res.status(200).send({errMsg: "please specifiy a user type" })}
 }
 
 function loginController (req, res){
   const user = req.body;
   if( !user.email || !user.password ) {
-    return res.status(400).send({
-      message: 'Please provide an email and password'
+    return res.status(200).send({
+      errMsg: 'Please provide an email and password'
     })
   };
   userService.login(user).then((results) => {
@@ -33,7 +34,7 @@ function loginController (req, res){
     res.status(200).send(results[0]);
   })
   .catch((error) => {
-    res.status(402).send({ ok: false, error: error.message });
+    res.status(200).send({errMsg: "email or password incorrect"});
   });
 }
 

@@ -48,10 +48,11 @@ export default function RegistrationForm() {
             // field: Yup.string().required("required"),
             userType: Yup.string().required("required"),
         }),
-        onSubmit: (values) => {
+        onSubmit: (values, {resetForm}) => {
             console.log(values)
             //consume the registration api
             register()
+            resetForm()
         }
     })
     return (

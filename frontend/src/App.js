@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import LoginForm from './components/login';
+import AdminLoginForm from "./components/login-admin";
 import RegistrationForm from './components/registration';
 import NavBar from './components/navbar';
 import Home from './components/home';
@@ -14,6 +15,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginForm />} />
+          <Route path="/login-admin" element={<AdminLoginForm />} />
           <Route path="/register" element={<RegistrationForm />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/*" element={<ErrorPage />} />
