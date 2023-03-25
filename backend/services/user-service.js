@@ -15,7 +15,7 @@ function register(user) {
       db.query(query, queryVar, (error, results) => {
         if (error) {
           console.log("not working : ", error)
-          return reject(error);
+          reject(error);
         }
         resolve(results);
       });
@@ -24,7 +24,7 @@ function register(user) {
         db.query('SELECT * FROM user WHERE user_id = ?', [results.insertId], (error, results) =>{
           if(error){
             console.log(error)
-            return reject(error)
+            reject(error)
           }
           resolve(results)
         })
@@ -34,7 +34,7 @@ function register(user) {
         db.query("INSERT INTO " + user.userType + " SET ?", { User_id: OldResults[0].user_id }, (error, results) => {
           if (error) {
             console.log(error);
-            return reject(error)
+            reject(error)
           }
           resolve(OldResults)
         });
@@ -48,12 +48,14 @@ function login(user) {
     db.query('SELECT * FROM user WHERE user_email = ?', [user.email], async (error, results) => {
       console.log(results[0]);
       if (!results || !(await bcrypt.compare(user.password, results[0].user_password))) {
-        error = new Error("wrong email or password");
-        return reject(error);
-      } else {
-        if (error) {
-          return reject(error);
-        }
+        const AccountError = new Error("wrong email or password");
+        reject(AccountError );
+      } else if(results[0].user_email_confirmed == 'false'){
+        const EmailConfirmationError = new Error("your email not confirmed");
+        reject(EmailConfirmationError);
+      }else if(error){
+        reject(error)
+      }else{
         resolve(results);
       }
     });
@@ -108,7 +110,7 @@ async function sendEmail(username, userEmail, token){
     from: process.env.GMAIL_USER, // replace with the email address of the sender
     to: userEmail, // replace with the email address of the recipient
     subject: 'Email confirmation', // replace with the subject of the email
-    html: 'http://localhost/verifyUserEmail/'+username+'/'+token // replace with the HTML content of the email
+    html: 'http://localhost:5000/verifyUserEmail/'+username+'/'+token // replace with the HTML content of the email
   };
 
   // send mail with defined transport object
@@ -120,12 +122,26 @@ async function sendEmail(username, userEmail, token){
     }
   })
 }
-/*function updateEmailStatus(){
-  const query = `UPDATE user SET user_email_confirmed = true WHERE user_id = ${userId}`;
-  // execute the query
-  connection.query(query, (err, result) => {
-    if (err) throw err;
-    console.log(`${result.affectedRows} row(s) updated`);
-  });
-}*/
-module.exports = { register, login, createToken, createEmailToken, sendEmail};
+function updateEmailStatus(token){
+    return new Promise((resolve, reject) => {
+      jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(decoded);
+        }
+      });
+    }).then((decoded)=>{
+      return new Promise((resolve, reject) => {
+        const sql = `UPDATE user SET user_email_confirmed = true WHERE user_id = ${decoded.userId}`;
+        db.query(sql, (err, result) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        });
+      });
+    })
+}
+module.exports = { register, login, createToken, createEmailToken, sendEmail, updateEmailStatus};

@@ -4,7 +4,6 @@
 backend/node_modules
 backend/.env
 test.session.sql
-backend/.env
 /.pnp
 .pnp.js
 backend/database_schema/workSpace.mwb.bak
