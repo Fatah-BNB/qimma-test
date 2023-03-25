@@ -8,6 +8,7 @@ import "./login.css"
 export default function LoginForm() {
   const [loginStatus, setLoginStatus] = useState("");
   const [loginErrStatus, setLoginErrStatus] = useState("");
+  const [userType, setUserType] = useState([]);
   const login = () => {
     Axios.post("http://localhost:5000/login", {
       email: formik.values.email,
@@ -17,6 +18,13 @@ export default function LoginForm() {
         setLoginErrStatus(response.data.errMsg)
       } else {
         setLoginStatus(response.data.user_firstName)
+        setUserType(response.data.userType)
+        navigate("/profile", {
+          state: {
+            username: response.data.user_firstName,
+            userType: response.data.userType
+          }
+        })
       }
     })
   }
@@ -40,10 +48,11 @@ export default function LoginForm() {
   })
   return (
     <div>
-    <h1 >HOME</h1>
+      <h1 >HOME</h1>
       <div className="login-form-container">
         <h2>Login</h2>
         {loginStatus !== "" ? <p>Welcome : {loginStatus}</p> : <p>{loginErrStatus}</p>}
+        {userType !== [] && <p>user type : {userType}</p>}
         <form onSubmit={formik.handleSubmit}>
           <div class="form-group">
             <label for="email">Email address</label>
