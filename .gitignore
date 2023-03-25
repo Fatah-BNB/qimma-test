@@ -2,6 +2,7 @@
 
 # dependencies
 backend/node_modules
+backend/.env
 test.session.sql
 /.pnp
 .pnp.js
