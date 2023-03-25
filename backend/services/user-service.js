@@ -1,27 +1,44 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const db = require('../db');
+const nodemailer = require('nodemailer');
+const dotenv = require('dotenv');
+dotenv.config({ path: './.env'});
+
 function register(user) {
   console.log("register called")
   return bcrypt.hash(user.password, 8).then((hash) => {
     console.log("password crypted")
-    return new Promise((resolve, reject) => {
-      const query = "INSERT INTO user (user_email, user_password, user_firstName, user_lastName, user_gender, user_birthDate, user_phoneNumber, user_card_id, user_email_confirmed) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-      const queryVar = [user.email, hash, user.firstname, user.lastname, user.gender, user.birthdate, user.phonenumber, user.cardId, user.emailConfirmed];
+    return new Promise((resolve, reject) => {//insert new user to user table
+      const query = "INSERT INTO user (user_email, user_password, user_firstName, user_lastName, user_gender, user_birthDate, user_phoneNumber, user_card_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+      const queryVar = [user.email, hash, user.firstname, user.lastname, user.gender, user.birthdate, user.phonenumber, user.cardId];
       db.query(query, queryVar, (error, results) => {
         if (error) {
           console.log("not working : ", error)
           return reject(error);
         }
         resolve(results);
-        console.log("register called")
       });
     }).then((results) => {
-      db.query("INSERT INTO " + user.userType + " SET ?", { User_id: results.insertId }, (error, results) => {
-        if (error) {
-          console.log(error);
-        }
-      });
+      return new Promise((resolve, reject) =>{// get all users 
+        db.query('SELECT * FROM user WHERE user_id = ?', [results.insertId], (error, results) =>{
+          if(error){
+            console.log(error)
+            return reject(error)
+          }
+          resolve(results)
+        })
+      })
+    }).then((OldResults) => {
+      return new Promise((resolve, reject) =>{//set userType 
+        db.query("INSERT INTO " + user.userType + " SET ?", { User_id: OldResults[0].user_id }, (error, results) => {
+          if (error) {
+            console.log(error);
+            return reject(error)
+          }
+          resolve(OldResults)
+        });
+      })
     });
   });
 }
@@ -72,4 +89,43 @@ function createToken(userId){
   });
   return token
 }
-module.exports = { register,login, createToken };
+function createEmailToken(username, userId){
+  const token = jwt.sign({ username, userId }, process.env.JWT_SECRET, { expiresIn: '24h' });
+  console.log('email token created ', token)
+  return token
+}
+
+async function sendEmail(username, userEmail, token){
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.GMAIL_USER, // replace with your Gmail email address
+      pass: process.env.GMAIL_PASSWORD // replace with your Gmail password or app-specific password
+    }
+  });
+  // setup email data with unicode symbols
+  const mailOptions = {
+    from: process.env.GMAIL_USER, // replace with the email address of the sender
+    to: userEmail, // replace with the email address of the recipient
+    subject: 'Email confirmation', // replace with the subject of the email
+    html: 'http://localhost/verifyUserEmail/'+username+'/'+token // replace with the HTML content of the email
+  };
+
+  // send mail with defined transport object
+  await transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  })
+}
+/*function updateEmailStatus(){
+  const query = `UPDATE user SET user_email_confirmed = true WHERE user_id = ${userId}`;
+  // execute the query
+  connection.query(query, (err, result) => {
+    if (err) throw err;
+    console.log(`${result.affectedRows} row(s) updated`);
+  });
+}*/
+module.exports = { register, login, createToken, createEmailToken, sendEmail};

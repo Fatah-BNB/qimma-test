@@ -2,6 +2,7 @@
 
 # dependencies
 backend/node_modules
+backend/.env
 /.pnp
 .pnp.js
 backend/database_schema/workSpace.mwb.bak

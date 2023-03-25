@@ -1,11 +1,15 @@
 const userService = require('../services/user-service');
 
-async function registerController (req, res){
+function registerController (req, res){
   console.log('req.bode', req.body);
   if(!(typeof req.body.userType === "undefined")){
     const user = req.body;
-    await userService.register(user).then(() => {
-      res.status(200).send({succMsg: "Account created" });
+    userService.register(user).then((results) => {//after the user register the server send an email to the user
+      //1) create token for email 
+      const emailToken = userService.createEmailToken(results[0].user_firstname);
+      //2) send the email
+      userService.sendEmail(results[0].user_firstname, results[0].user_email, emailToken);
+      res.status(200).send({succMsg: "Account created", results: results[0]});
     })
     .catch((error) => {
       res.status(200).send({errMsg: "Faild to create account"});
@@ -50,5 +54,8 @@ function profileController(req, res){
   res.status(200).send({ ok: true});
  
 }
+function updateEmailStatusCntrl(req, res){
 
-module.exports = {registerController, loginController, profileController, logoutController};
+}
+
+module.exports = {registerController, loginController, profileController, logoutController, updateEmailStatusCntrl};
