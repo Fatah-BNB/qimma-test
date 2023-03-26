@@ -2,14 +2,16 @@ const express = require('express');
 
 const router = express.Router();
 const userController = require('../controllers/user-controller');
+const parentController = require('../controllers/parent-controller');
 const checkToken = require('../middleware/checkToken');
 
-
+//----------------authenticaiton and registration --------------------------------------------
 router.post('/register', userController.registerController);
-router.get('/verifyUserEmail/:username/:token', userController.updateEmailStatusCntrl);
+router.get('/verify-user-email/:username/:token', userController.updateEmailStatusCntrl);
 router.post('/login', userController.loginController);
-router.post('/login/resendEmailVerification', userController.resendEmailVerificationCntrl);
+router.post('/login/resend-email-verification', userController.resendEmailVerificationCntrl);
 router.get('/logout', userController.logoutController);
-router.get('/profile', checkToken.verifyToken, userController.profileController);
+//-----------------dashboards--------------------------------------------------------------------
+router.post('/dashboard/create-child-account', checkToken.verifyToken, parentController.createChildAccountCntrl);
 
 module.exports = router;

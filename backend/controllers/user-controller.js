@@ -5,20 +5,20 @@ const jwt = require('jsonwebtoken');
 
 function registerController(req, res) {
   console.log('req.bode', req.body);
-  if (!(typeof req.body.userType === "undefined")) {
-    const user = req.body;
-    userService.register(user).then(async (results) => {//after the user register the server send an email to the user
-      //1) create token for email 
-      const emailToken = userService.createEmailToken(results[0].user_firstName, results[0].user_id);
-      //2) send the email
-      userService.sendEmail(results[0].user_firstName, results[0].user_email, emailToken);
-      res.status(200).send({ succMsg: "Account created", results: results[0] });
-    })
-      .catch((error) => {
-        res.status(401).send({ errMsg: "Faild to create account" });
-        console.log(error)
-      });
-  } else { res.status(401).send({ errMsg: "please specifiy a user type" }) }
+
+  const user = req.body;
+  userService.register(user).then(async (results) => {//after the user register the server send an email to the user
+    //1) create token for email 
+    const emailToken = userService.createEmailToken(results[0].user_firstName, results[0].user_id);
+    //2) send the email
+    userService.sendEmail(results[0].user_firstName, results[0].user_email, emailToken);
+    res.status(200).send({ succMsg: "Account created", results: results[0] });
+  })
+    .catch((error) => {
+      res.status(401).send({ errMsg: "Faild to create account" });
+      console.log(error)
+    });
+
 }
 
 function loginController(req, res) {
@@ -53,7 +53,8 @@ function logoutController(req, res) {
   });
   res.status(200).send({ succMsg: "cookie is cleard" });
 }
-function profileController(req, res) {
+function dashboardCntrl(req, res) {
+  userService
   res.status(200).send({ ok: true });
 
 }
@@ -92,5 +93,5 @@ function resendEmailVerificationCntrl(req, res) {
 
 module.exports = {
   registerController, loginController,
-  profileController, logoutController, updateEmailStatusCntrl, resendEmailVerificationCntrl
+  dashboardCntrl, logoutController, updateEmailStatusCntrl, resendEmailVerificationCntrl
 };

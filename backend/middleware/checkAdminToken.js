@@ -6,7 +6,7 @@ exports.verifyToken = async (req, res, next) => {
     } else if(authData.role === 'admin') {
         // Save authData to request object for use in route handler 
         req.authData = authData;
-        return next();
+        next();
     }else{
         res.status(403).send({error: 'protected page'});
     }});

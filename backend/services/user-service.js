@@ -31,7 +31,7 @@ function register(user) {
       })
     }).then((OldResults) => {
       return new Promise((resolve, reject) =>{//set userType 
-        db.query("INSERT INTO " + user.userType + " SET ?", { User_id: OldResults[0].user_id }, (error, results) => {
+        db.query("INSERT INTO " + user.userType + " SET ?", { user_id: OldResults[0].user_id }, (error, results) => {
           if (error) {
             console.log(error);
             reject(error)
@@ -64,17 +64,17 @@ function login(user) {
     //retrieve user type
     return new Promise((resolve, reject) => {
       let userType = [];
-      db.query('SELECT * FROM student WHERE User_id = ?', [oldResults[0].user_id], (fields, results) => {
+      db.query('SELECT * FROM student WHERE user_id = ?', [oldResults[0].user_id], (fields, results) => {
         if (JSON.stringify(results).length > 2) {
           userType.push("student");
         };
       });
-      db.query('SELECT * FROM instructor WHERE User_id = ?', [oldResults[0].user_id], (fields, results) => {
+      db.query('SELECT * FROM instructor WHERE user_id = ?', [oldResults[0].user_id], (fields, results) => {
         if (JSON.stringify(results).length > 2) {
           userType.push("instructor");
         };
       });
-      db.query('SELECT * FROM parent WHERE User_id = ?', [oldResults[0].user_id], (fields, results) => {
+      db.query('SELECT * FROM parent WHERE user_id = ?', [oldResults[0].user_id], (fields, results) => {
         if (JSON.stringify(results).length > 2) {
           userType.push("parent");
         };
@@ -110,7 +110,7 @@ function sendEmail(username, userEmail, token){
     from: process.env.GMAIL_USER, // replace with the email address of the sender
     to: userEmail, // replace with the email address of the recipient
     subject: 'Email confirmation', // replace with the subject of the email
-    html: 'http://localhost:5000/verifyUserEmail/'+username+'/'+token // replace with the HTML content of the email
+    html: 'http://localhost:5000/verify-user-email/'+username+'/'+token // replace with the HTML content of the email
   };
 
   // send mail with defined transport object
@@ -161,4 +161,18 @@ function retrieveUserByEmail(email){
     })
   })
 }
-module.exports = { register, login, createToken, createEmailToken, sendEmail, updateEmailStatus, retrieveUserByEmail};
+/*function retrieveUserById(userId){
+  //retrieve user form db
+  return new Promise((resolve, reject) => {
+    db.query('SELECT * FROM user WHERE user_id = ?', [userId], async (error, results) => {
+      console.log(results[0]);
+      if(error){
+        reject(error)
+      }else{
+        resolve(results);
+      }
+    });
+  })
+}*/
+module.exports = { register, login, createToken, createEmailToken, sendEmail,
+   updateEmailStatus, retrieveUserByEmail};

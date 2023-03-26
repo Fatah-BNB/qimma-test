@@ -6,7 +6,7 @@ exports.verifyToken = async (req, res, next) => {
     } else {
       // Save authData to request object for use in route handler 
       req.authData = authData;
-      return next();
+      next();
     }
   });
     
