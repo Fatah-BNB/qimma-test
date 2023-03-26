@@ -97,7 +97,7 @@ function createEmailToken(username, userId){
   return token
 }
 
-async function sendEmail(username, userEmail, token){
+function sendEmail(username, userEmail, token){
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -114,13 +114,18 @@ async function sendEmail(username, userEmail, token){
   };
 
   // send mail with defined transport object
-  await transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log('Email sent: ' + info.response);
-    }
-  })
+  return new Promise((resolve, reject) => {
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+        reject(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+        resolve(info);
+      }
+    });
+  });
+  
 }
 function updateEmailStatus(token){
     return new Promise((resolve, reject) => {
@@ -144,4 +149,16 @@ function updateEmailStatus(token){
       });
     })
 }
-module.exports = { register, login, createToken, createEmailToken, sendEmail, updateEmailStatus};
+function retrieveUserByEmail(email){
+  return new Promise((resolve, reject) =>{
+    db.query('SELECT user_id, user_firstName FROM user WHERE user_email = ?', [email], (error, results) =>{
+      if(error){
+        console.log(error)
+        reject(error)
+      }else{
+        resolve(results)
+      }
+    })
+  })
+}
+module.exports = { register, login, createToken, createEmailToken, sendEmail, updateEmailStatus, retrieveUserByEmail};

@@ -8,6 +8,7 @@ const checkToken = require('../middleware/checkToken');
 router.post('/register', userController.registerController);
 router.get('/verifyUserEmail/:username/:token', userController.updateEmailStatusCntrl);
 router.post('/login', userController.loginController);
+router.post('/login/resendEmailVerification', userController.resendEmailVerificationCntrl);
 router.get('/logout', userController.logoutController);
 router.get('/profile', checkToken.verifyToken, userController.profileController);
 
