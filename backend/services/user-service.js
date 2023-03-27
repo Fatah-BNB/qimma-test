@@ -10,8 +10,8 @@ function register(user) {
   return bcrypt.hash(user.password, 8).then((hash) => {
     console.log("password crypted")
     return new Promise((resolve, reject) => {//insert new user to user table
-      const query = "INSERT INTO user (user_email, user_password, user_firstName, user_lastName, user_gender, user_birthDate, user_phoneNumber, user_card_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-      const queryVar = [user.email, hash, user.firstname, user.lastname, user.gender, user.birthdate, user.phonenumber, user.cardId];
+      const query = "INSERT INTO user (user_email, user_password, user_firstName, user_lastName, user_gender, user_birthDate, user_phoneNumber, user_card_id, wilaya_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      const queryVar = [user.email, hash, user.firstname, user.lastname, user.gender, user.birthdate, user.phonenumber, user.cardId, user.wilaya_code];
       db.query(query, queryVar, (error, results) => {
         if (error) {
           console.log("not working : ", error)
