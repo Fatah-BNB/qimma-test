@@ -11,7 +11,8 @@ router.get('/verify-user-email/:username/:token', userController.updateEmailStat
 router.post('/login', userController.loginController);
 router.post('/login/resend-email-verification', userController.resendEmailVerificationCntrl);
 router.get('/logout', userController.logoutController);
-//-----------------dashboards--------------------------------------------------------------------
+//-----------------Parent dashboards--------------------------------------------------------------------
 router.post('/dashboard/create-child-account', checkToken.verifyToken, parentController.createChildAccountCntrl);
+router.get('/dashboard/children-accounts', checkToken.verifyToken, parentController.getChildrenAccountsCntrl);
 
 module.exports = router;

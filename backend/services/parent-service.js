@@ -51,5 +51,18 @@ function registerChild(user, parentId) {
         });
     });
 }
+function ChildrenAccounts(parentId){
+    return new Promise((resolve, reject) => {// get all children accounts related to parent id
+        const query = "SELECT user_email, user_firstName, user_lastName, user_gender, user_birthDate, wilaya_code, tier  FROM user INNER JOIN student ON user.user_id = student.user_id  INNER JOIN parent ON student.parent_id = parent.parent_id  WHERE parent.parent_id  = ?"
+        const queryVar = [parentId]
+        db.query(query,queryVar, (error, results) => {
+            if (error) {
+                console.log(error)
+                reject(error)
+            }
+            resolve(results)
+        })
+    })
+}
 
-module.exports = { registerChild }
+module.exports = { registerChild, ChildrenAccounts }

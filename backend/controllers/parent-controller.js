@@ -16,4 +16,13 @@ function createChildAccountCntrl(req, res) {
     });
 
 }
-module.exports = { createChildAccountCntrl }
+function getChildrenAccountsCntrl(req, res){
+    const parentId = req.authData.userTypeIds
+    parentService.ChildrenAccounts(parentId).then((results)=>{
+        res.status(200).send({ succMsg: "children accounts", results: results });
+    }).catch((error) => {
+        res.status(401).send({ errMsg: "cannot get children accounts" });
+    });
+    
+}
+module.exports = { createChildAccountCntrl, getChildrenAccountsCntrl }

@@ -64,29 +64,35 @@ function login(user) {
     //retrieve user type
     return new Promise((resolve, reject) => {
       let userType = [];
+      let userTypeIds = [];
       db.query('SELECT * FROM student WHERE user_id = ?', [oldResults[0].user_id], (fields, results) => {
         if (JSON.stringify(results).length > 2) {
           userType.push("student");
+          userTypeIds.push(results[0].student_id);
         };
       });
       db.query('SELECT * FROM instructor WHERE user_id = ?', [oldResults[0].user_id], (fields, results) => {
         if (JSON.stringify(results).length > 2) {
+          console.log(">>>>> ",results)
           userType.push("instructor");
+          userTypeIds.push(results[0].instructor_id);
         };
       });
       db.query('SELECT * FROM parent WHERE user_id = ?', [oldResults[0].user_id], (fields, results) => {
         if (JSON.stringify(results).length > 2) {
           userType.push("parent");
+          userTypeIds.push(results[0].parent_id);
         };
         oldResults[0].userType = userType.toString();
+        oldResults[0].userTypeIds = userTypeIds.toString();
         resolve(oldResults);
       });
     });
   });
 }
 
-function createToken(userId) {
-  const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
+function createToken(userId, userTypeIds) {
+  const token = jwt.sign({userId, userTypeIds}, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN
   });
   return token
