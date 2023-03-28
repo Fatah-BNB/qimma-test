@@ -1,34 +1,29 @@
 import React, { useState } from "react"
 import { useFormik } from "formik"
 import Axios from "axios"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import * as Yup from "yup"
 import "./login.css"
 
 export default function LoginForm() {
-  const [loginStatus, setLoginStatus] = useState("");
-  const [loginErrStatus, setLoginErrStatus] = useState("");
-  const [userType, setUserType] = useState([]);
+  const [loginMsg, setLoginMsg] = useState("")
   const login = () => {
     Axios.post("http://localhost:5000/login", {
       email: formik.values.email,
       password: formik.values.password,
     }).then((response) => {
-      if (response.data.errMsg) {
-        setLoginErrStatus(response.data.errMsg)
-      } else {
-        setLoginStatus(response.data.user_firstName)
-        setUserType(response.data.userType)
         navigate("/profile", {
           state: {
             username: response.data.user_firstName,
             userType: response.data.userType
           }
         })
-      }
+    }).catch( (error) => {
+      setLoginMsg(error.response.data.errMsg)
     })
   }
   const navigate = useNavigate()
+  const location = useLocation()
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -43,7 +38,6 @@ export default function LoginForm() {
       //consume the login api
       login()
       resetForm()
-      // navigate("/profile")
     }
   })
   return (
@@ -51,8 +45,7 @@ export default function LoginForm() {
       <h1 >HOME</h1>
       <div className="login-form-container">
         <h2>Login</h2>
-        {loginStatus !== "" ? <p>Welcome : {loginStatus}</p> : <p>{loginErrStatus}</p>}
-        {userType !== [] && <p>user type : {userType}</p>}
+        <p>{loginMsg}</p>
         <form onSubmit={formik.handleSubmit}>
           <div class="form-group">
             <label for="email">Email address</label>

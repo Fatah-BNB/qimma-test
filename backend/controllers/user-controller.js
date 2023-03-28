@@ -15,19 +15,13 @@ function registerController(req, res) {
     res.status(200).send({ succMsg: "Account created", results: results[0] });
   })
     .catch((error) => {
-      res.status(401).send({ errMsg: "Faild to create account" });
-      console.log(error)
+      res.status(401).send({ errMsg: error.message });
     });
 
 }
 
 function loginController(req, res) {
   const user = req.body;
-  if (!user.email || !user.password) {
-    return res.status(200).send({
-      errMsg: 'Please provide an email and password'
-    })
-  };
   userService.login(user).then((results) => {
     const cookieOptions = {
       expires: new Date(

@@ -1,23 +1,34 @@
 import React, { useState } from "react"
-import { useFormik, Field } from "formik"
+import { useNavigate } from "react-router-dom"
+import { useFormik } from "formik"
 import Axios from "axios"
 import * as Yup from "yup"
 import "./registration.css"
 
 export default function RegistrationForm() {
-    const [registerStatus, setRegisterStatus] = useState("")
+    const [registerMsg, setRegisterMsg] = useState("")
+    const navigate = useNavigate()
     const register = () => {
         Axios.post("http://localhost:5000/register", {
             firstname: formik.values.firstname,
+            lastname: formik.values.lastname,
+            gender: formik.values.gender,
+            birthdate: formik.values.birthdate,
+            phonenumber: formik.values.phoneNumber,
             email: formik.values.email,
             password: formik.values.password,
             userType: formik.values.userType,
+            tier: formik.values.tier,
+            field: formik.values.field,
         }).then((response) => {
-            if (response.data.message) {
-                setRegisterStatus(response.data.message)
-            } else {
-                setRegisterStatus("Account created")
-            }
+            setRegisterMsg(response.data.succMsg)
+            navigate("/login", {
+                state: {
+                    emailAdr: response.data.user_email,
+                }
+            })
+        }).catch( (error) => {
+            setRegisterMsg(error.response.data.errMsg)
         })
     }
     const formik = useFormik({
@@ -35,7 +46,7 @@ export default function RegistrationForm() {
             userType: ""
         },
         validationSchema: Yup.object({
-            email: Yup.string().email("this email address is not valid").required("required"),
+            email: Yup.string().email("invalid email address").required("required"),
             password: Yup.string().min(8, "password must be 8 characters long").required("required"),
             passwordc: Yup.string().oneOf([Yup.ref("password"), null], "passwords must match").required("required"),
             firstname: Yup.string().required("required"),
@@ -43,22 +54,20 @@ export default function RegistrationForm() {
             birthdate: Yup.date().required("required"),
             gender: Yup.string().required("required"),
             phoneNumber: Yup.string().required("required"),
-            // tier: Yup.string().required("required"),
-            // field: Yup.string().when("userType", {is: "teacher", then: Yup.string().required("required")}),
-            // field: Yup.string().required("required"),
             userType: Yup.string().required("required"),
+            // tier: Yup.string().when('userType', {is: "student", then: Yup.string().required("required"), otherwise: Yup.string()}),
         }),
         onSubmit: (values, {resetForm}) => {
             console.log(values)
             //consume the registration api
             register()
-            resetForm()
+            // resetForm()
         }
     })
     return (
         <div className="registration-form-container">
             <h2>Register new account</h2>
-            <p>{registerStatus}</p>
+            <p>{registerMsg}</p>
             <form onSubmit={formik.handleSubmit}>
                 <div>
                     <label>
@@ -168,7 +177,8 @@ export default function RegistrationForm() {
                         onBlur={formik.handleBlur}
                         value={formik.values.gender}
                     >
-                        <option disabled name="selectGender">-- select your gender --</option>
+                        {/* <option disabled selected name="selectGender">-- select your gender --</option> */}
+                        <option value="">-- select gender --</option>
                         <option name="male" value="male">male</option>
                         <option name="female" value="female">female</option>
                     </select>
@@ -193,9 +203,14 @@ export default function RegistrationForm() {
                         onBlur={formik.handleBlur}
                         value={formik.values.tier}
                     >
-                        <option disabled name="selectTier">-- select your tier --</option>
-                        <option name="secondary" value="secondary school">Secondary school</option>
-                        <option name="middle" value="middle school">Middle school</option>
+                        {/* <option disabled name="selectTier">-- select your tier --</option> */}
+                        <option value="">-- select your tier --</option>
+                        <option name="secondary1" value="1st year secondary school">1st year secondary school</option>
+                        <option name="secondary2" value="2nd year secondary school">2nd year secondary school</option>
+                        <option name="secondary3" value="3rd year secondary school">3rd year secondary school</option>
+                        <option name="middle1" value="1st year middle school">1st year middle school</option>
+                        <option name="middle2" value="2nd year middle school">2nd year middle school</option>
+                        <option name="middle3" value="3rd year middle school">3rd year middle school</option>
                     </select>
                     {formik.touched.tier && formik.errors.tier ? <p className="error-message">{formik.errors.tier}</p> : null}
                 </div>}
@@ -207,9 +222,15 @@ export default function RegistrationForm() {
                         onBlur={formik.handleBlur}
                         value={formik.values.field}
                     >
-                        <option disabled name="selectField">-- select your field --</option>
-                        <option name="IT" value="IT and technology">IT and technology</option>
-                        <option name="science" value="science">Science</option>
+                        <option value="">-- select your field --</option>
+                        <option name="math" value="Mathematics">Mathematics</option>
+                        <option name="science" value="Science">Science</option>
+                        <option name="physics" value="physics">Physics</option>
+                        <option name="eng" value="English">English</option>
+                        <option name="fr" value="French">French</option>
+                        <option name="ar" value="Arabic">Arabic</option>
+                        <option name="islamic" value="Islamic sciences">Islamic sciences</option>
+                        <option name="his&geo" value="History and geography">History and geography</option>
                     </select>
                     {formik.touched.field && formik.errors.field ? <p className="error-message">{formik.errors.field}</p> : null}
                 </div>}
