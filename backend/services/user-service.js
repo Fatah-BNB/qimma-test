@@ -43,9 +43,9 @@ function register(user) {
 function login(user) {
   //retrieve user form db
   return new Promise((resolve, reject) => {
-    db.query('SELECT * FROM user WHERE user_email = ?', [user.email], async (error, results) => {
+    db.query('SELECT * FROM user WHERE user_email = ?', [user.email], (error, results) => {
       console.log(results[0]);
-      if (!results || !(await bcrypt.compare(user.password, results[0].user_password))) {
+      if (!results[0]  || !(bcrypt.compare(user.password, results[0].user_password))) {
         const AccountError = new Error("email or password incorrect");
         reject(AccountError);
       } else if (results[0].user_email_confirmed == 'false') {

@@ -3,7 +3,7 @@ const userService = require('../services/user-service');
 
 function createChildAccountCntrl(req, res) {
     const user = req.body
-    const parentId = req.authData.userId
+    const parentId = req.authData.userTypeIds
     console.log("parent ID", parentId)
     parentService.registerChild(user, parentId).then(async (results) => {//after the user register the server send an email to the user
         //1) create token for email 

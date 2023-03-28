@@ -17,30 +17,9 @@ function registerChild(user, parentId) {
                 }
                 resolve(results);
             });
-        }).then((results) => {
-            return new Promise((resolve, reject) => {// get all users 
-                db.query('SELECT * FROM user WHERE user_id = ?', [results.insertId], (error, results) => {
-                    if (error) {
-                        console.log(error)
-                        reject(error)
-                    }
-                    resolve(results)
-                })
-            })
         }).then((OldResults) => {
             return new Promise((resolve, reject) => {//set userType 
-                db.query("SELECT * FROM parent WHERE user_id = ?", [parentId], (error, results) => {
-                    if (error) {
-                        console.log(error);
-                        reject(error)
-                    }
-                    OldResults[0].parentId = results[0].parent_id
-                    resolve(OldResults)
-                });
-            })
-        }).then((OldResults) => {
-            return new Promise((resolve, reject) => {//set userType 
-                db.query("INSERT INTO student (user_id, parent_id) VALUES (?, ?)", [OldResults[0].user_id, OldResults[0].parentId], (error, results) => {
+                db.query("INSERT INTO student (user_id, parent_id) VALUES (?, ?)", [results.insertId, parentId], (error, results) => {
                     if (error) {
                         console.log(error);
                         reject(error)

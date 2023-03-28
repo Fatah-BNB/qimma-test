@@ -47,11 +47,6 @@ function logoutController(req, res) {
   });
   res.status(200).send({ succMsg: "cookie is cleard" });
 }
-function dashboardCntrl(req, res) {
-  userService
-  res.status(200).send({ ok: true });
-
-}
 function updateEmailStatusCntrl(req, res) {
   const token = req.params.token
   userService.updateEmailStatus(token).then(() => {
@@ -87,5 +82,5 @@ function resendEmailVerificationCntrl(req, res) {
 
 module.exports = {
   registerController, loginController,
-  dashboardCntrl, logoutController, updateEmailStatusCntrl, resendEmailVerificationCntrl
+ logoutController, updateEmailStatusCntrl, resendEmailVerificationCntrl
 };

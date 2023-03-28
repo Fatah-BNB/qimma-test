@@ -19,7 +19,7 @@ function login(admin) {
   return  new Promise((resolve, reject) => {
     db.query('SELECT * FROM admin WHERE admin_email = ?', [admin.email], async (error, results) => {
       console.log(results[0]);
-      if (!results || admin.password !== results[0].admin_password) {
+      if (!results[0] || admin.password !== results[0].admin_password) {
         error = new Error("wrong email or password");
         return reject(error);
       } else {
