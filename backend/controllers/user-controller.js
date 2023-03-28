@@ -30,7 +30,7 @@ function loginController(req, res) {
       httpOnly: true,
       secure: true
     }
-    const token = userService.createToken(results[0].user_id, results[0].userTypeIds)
+    const token = userService.createToken(results[0].user_id, results[0].userTypeIds, results[0].userType)
     res.cookie('jwt', token, cookieOptions);
     res.status(200).send(results[0]);
   })

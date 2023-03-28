@@ -89,8 +89,8 @@ function login(user) {
   });
 }
 
-function createToken(userId, userTypeIds) {
-  const token = jwt.sign({ userId, userTypeIds }, process.env.JWT_SECRET, {
+function createToken(userId, userTypeIds, userType) {
+  const token = jwt.sign({ userId, userTypeIds, userType }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN
   });
   return token
@@ -165,19 +165,6 @@ function retrieveUserByEmail(email) {
     })
   })
 }
-/*function retrieveUserById(userId){
-  //retrieve user form db
-  return new Promise((resolve, reject) => {
-    db.query('SELECT * FROM user WHERE user_id = ?', [userId], async (error, results) => {
-      console.log(results[0]);
-      if(error){
-        reject(error)
-      }else{
-        resolve(results);
-      }
-    });
-  })
-}*/
 module.exports = {
   register, login, createToken, createEmailToken, sendEmail,
   updateEmailStatus, retrieveUserByEmail
