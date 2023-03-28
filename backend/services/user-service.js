@@ -10,7 +10,7 @@ function register(user) {
     return new Promise((resolve, reject) => {
       console.log(user)
       const query = "INSERT INTO user (user_email, user_password, user_firstName, user_lastName, user_gender, user_birthDate, user_phoneNumber, user_card_id, wilaya_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-      const queryVar = [user.email, hash, user.firstname, user.lastname, user.gender, user.birthdate, user.phonenumber, user.cardId, 5];
+      const queryVar = [user.email, hash, user.firstname, user.lastname, user.gender, user.birthdate, user.phonenumber, user.cardId, user.wilaya_code];
       db.query(query, queryVar, (error, results) => {
         if (error) {
           dupEmailErr = new Error("Failed to create account\n(possible reason: this email address is already in use)")
@@ -43,9 +43,9 @@ function register(user) {
 function login(user) {
   //retrieve user form db
   return new Promise((resolve, reject) => {
-    db.query('SELECT * FROM user WHERE user_email = ?', [user.email], (error, results) => {
+    db.query('SELECT * FROM user WHERE user_email = ?', [user.email], async (error, results) => {
       console.log(results[0]);
-      if (!results[0]  || !(bcrypt.compare(user.password, results[0].user_password))) {
+      if (!results[0]  || !(await bcrypt.compare(user.password, results[0].user_password))) {
         const AccountError = new Error("email or password incorrect");
         reject(AccountError);
       } else if (results[0].user_email_confirmed == 'false') {
