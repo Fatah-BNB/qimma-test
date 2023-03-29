@@ -23,18 +23,66 @@ function register(user) {
         db.query('SELECT * FROM user WHERE user_id = ?', [results.insertId], (error, results) => {
           if (error) {
             reject(error)
+          }else{
+            resolve(results)
           }
-          resolve(results)
         })
       })
     }).then((OldResults) => {
-      return new Promise((resolve, reject) => {//set userType 
-        db.query("INSERT INTO " + user.userType + " SET ?", { user_id: OldResults[0].user_id }, (error, results) => {
+      return new Promise((resolve, reject) => {//set userType
+        let queryVar
+        switch(user.userType){
+          case "student":
+            queryVar = { user_id: OldResults[0].user_id, tier: user.tier};
+            break;
+          case "instructor":
+            queryVar = { user_id: OldResults[0].user_id};
+            break;
+          default:
+            queryVar = { user_id: OldResults[0].user_id};
+        }
+        db.query("INSERT INTO " + user.userType + " SET ?", queryVar, (error, results) => {
           if (error) {
             reject(error)
+          }else if(user.field){//save the instructor id in OldResults
+            OldResults[0].instructorId = results.insertId;
+            resolve(OldResults)
+          }else{
+            resolve(OldResults)
           }
-          resolve(OldResults)
+          
         });
+      })
+    }).then((OldResults) =>{
+      return new Promise((resolve, reject)=>{
+        if(user.field){
+          db.query('SELECT * FROM field WHERE field_name = ?', [user.field], (error, results)=>{
+            if(error){
+              reject(error)
+            }else{// save field code in oldResults
+              OldResults[0].fieldId = results[0].field_code;
+              resolve(OldResults);
+            }
+          })
+        }else{
+          resolve(OldResults)
+        }
+      })
+    }).then((OldResults)=>{
+      return new Promise((resolve, reject)=>{
+        if(OldResults[0].hasOwnProperty('fieldId')){
+          const queryVar = {instructor_id: OldResults[0].instructorId, field_code: OldResults[0].fieldId}
+          db.query("INSERT INTO instructor_has_field SET ?", queryVar, (error, results) => {
+            if (error) {
+              reject(error)
+            }else{
+              resolve(OldResults)
+            }
+            
+          });
+        }else{
+          resolve(OldResults)
+        }
       })
     });
   });
@@ -189,7 +237,20 @@ function retrieveUserByEmail(email) {
     })
   })
 }
+
+function getFromTable(tableName){
+  return new Promise((resolve, reject) => {
+    db.query('SELECT * FROM ' +tableName, (error, results) => {
+      if (error) {
+        console.log(error)
+        reject(error)
+      } else {
+        resolve(results)
+      }
+    })
+  })
+}
 module.exports = {
   register, login, createToken, createEmailToken, sendEmail, updateEmailStatus,
-  updatePassword, retrieveUserByEmail
+  updatePassword, retrieveUserByEmail, getFromTable
 };

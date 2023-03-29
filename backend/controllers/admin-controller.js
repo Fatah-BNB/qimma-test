@@ -1,4 +1,5 @@
 const adminService = require('../services/admin-service');
+const userService = require('../services/user-service')
 
 
 function loginController (req, res){
@@ -26,7 +27,7 @@ function loginController (req, res){
   }
 
 function getAllUsersController (req, res){
-    adminService.getAllUsers().then((results) => {
+    userService.getFromTable('user').then((results) => {
       res.status(200).send({ ok: true, user: results });
     })
     .catch((error) => {

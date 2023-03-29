@@ -78,7 +78,6 @@ function resendEmailVerificationCntrl(req, res) {
   })
     .catch((error) => {
       res.status(401).send({ errMsg: "invalid email" });
-      console.log(error)
     });
 }
 
@@ -98,7 +97,6 @@ function passwordResettingCntrl(req, res) {
   })
     .catch((error) => {
       res.status(401).send({ errMsg: "invalid email" });
-      console.log(error)
     });
 }
 
@@ -118,8 +116,16 @@ function changePasswordCntrl(req, res) {
     });
 }
 
+function registerFieldsCntrl(req, res){
+  userService.getFromTable('field').then((results)=>{
+    res.status(200).send({ fields: results});
+  }).catch((error)=>{
+    res.status(400).send({ errMsg: error.message});
+  })
+}
+
 module.exports = {
   registerController, loginController,
   logoutController, updateEmailStatusCntrl, resendEmailVerificationCntrl,
-  passwordResettingCntrl, changePasswordCntrl
+  passwordResettingCntrl, changePasswordCntrl, registerFieldsCntrl
 };
