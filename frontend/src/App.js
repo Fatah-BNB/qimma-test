@@ -6,6 +6,7 @@ import NavBar from './components/navbar';
 import Home from './components/home';
 import Profile from "./components/profile";
 import ErrorPage from "./errPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -16,7 +17,7 @@ function App() {
           <Route path="/login" element={<LoginForm />} />
           <Route path="/login-admin" element={<AdminLoginForm />} />
           <Route path="/register" element={<RegistrationForm />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile" element={<ProtectedRoute isLogged={true} child={<Profile/>}/>} />
           <Route path="/*" element={<ErrorPage />} />
         </Routes>
       </div>
