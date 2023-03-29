@@ -10,6 +10,8 @@ router.post('/register', userController.registerController);
 router.get('/verify-user-email/:username/:token', userController.updateEmailStatusCntrl);
 router.post('/login', userController.loginController);
 router.post('/login/resend-email-verification', userController.resendEmailVerificationCntrl);
+router.post('/login/password-resetting', userController.passwordResettingCntrl);
+router.post('/login/password-resetting/:username/:token', userController.changePasswordCntrl);
 router.get('/logout', userController.logoutController);
 //-----------------Parent dashboards--------------------------------------------------------------------
 router.post('/dashboard/create-child-account', checkToken.verifyToken('parent'), parentController.createChildAccountCntrl);

@@ -10,8 +10,9 @@ function registerController(req, res) {
   userService.register(user).then(async (results) => {//after the user register the server send an email to the user
     //1) create token for email 
     const emailToken = userService.createEmailToken(results[0].user_firstName, results[0].user_id);
+    var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl + '/' + results[0].user_firstName + '/' + emailToken
     //2) send the email
-    userService.sendEmail(results[0].user_firstName, results[0].user_email, emailToken);
+    userService.sendEmail(results[0].user_email, fullUrl, 'Email confirmation');
     res.status(200).send({ succMsg: "Account created", results: results[0] });
   })
     .catch((error) => {
@@ -67,9 +68,10 @@ function resendEmailVerificationCntrl(req, res) {
     try {
       //1) create token for email 
       const emailToken = userService.createEmailToken(results[0].user_firstName, results[0].user_id);
+      var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl + '/' + results[0].user_firstName + '/' + emailToken
       //2) send the email
-      userService.sendEmail(results[0].user_firstName, email, emailToken);
-      res.status(200).send({ succMsg: "check ur email"});
+      userService.sendEmail(results[0].user_email, fullUrl, 'Email confirmation');
+      res.status(200).send({ succMsg: "check ur email" });
     } catch (error) {
       res.status(401).send({ errMsg: "Faild to send email" })
     }
@@ -80,7 +82,44 @@ function resendEmailVerificationCntrl(req, res) {
     });
 }
 
+function passwordResettingCntrl(req, res) {
+  const email = req.body.email;
+  userService.retrieveUserByEmail(email).then((results) => {//after the user register the server send an email to the user
+    try {
+      //1) create token for email 
+      const emailToken = userService.createEmailToken(results[0].user_firstName, results[0].user_id);
+      var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl + '/' + results[0].user_firstName + '/' + emailToken
+      //2) send the email
+      userService.sendEmail(results[0].user_email, fullUrl, 'Password resetting');
+      res.status(200).send({ succMsg: "check ur email" });
+    } catch (error) {
+      res.status(401).send({ errMsg: "Faild to send email" })
+    }
+  })
+    .catch((error) => {
+      res.status(401).send({ errMsg: "invalid email" });
+      console.log(error)
+    });
+}
+
+function changePasswordCntrl(req, res) {
+  const token = req.params.token
+  const password = req.body.password
+  userService.updatePassword(token, password).then(() => {
+    res.status(200).send({ succMsg: "password changed successfully" });
+  })
+    .catch((error) => {
+      console.log(error)
+      if (error instanceof jwt.JsonWebTokenError) {
+        res.status(401).send({ errMsg: "expired token, regenerate ur token" });
+      } else {
+        res.status(400).send({ errMsg: "cannot change password" });
+      }
+    });
+}
+
 module.exports = {
   registerController, loginController,
- logoutController, updateEmailStatusCntrl, resendEmailVerificationCntrl
+  logoutController, updateEmailStatusCntrl, resendEmailVerificationCntrl,
+  passwordResettingCntrl, changePasswordCntrl
 };

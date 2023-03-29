@@ -101,20 +101,19 @@ function createEmailToken(username, userId) {
   return token
 }
 
-function sendEmail(username, userEmail, token) {
+function sendEmail(userEmail, url, subject) {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: process.env.GMAIL_USER, // replace with your Gmail email address
-      pass: process.env.GMAIL_PASSWORD // replace with your Gmail password or app-specific password
+      user: process.env.GMAIL_USER, 
+      pass: process.env.GMAIL_PASSWORD 
     }
   });
-  // setup email data with unicode symbols
   const mailOptions = {
-    from: process.env.GMAIL_USER, // replace with the email address of the sender
-    to: userEmail, // replace with the email address of the recipient
-    subject: 'Email confirmation', // replace with the subject of the email
-    html: 'http://localhost:5000/verify-user-email/' + username + '/' + token // replace with the HTML content of the email
+    from: process.env.GMAIL_USER, 
+    to: userEmail, 
+    subject: subject, 
+    html: url
   };
 
   // send mail with defined transport object
@@ -142,8 +141,33 @@ function updateEmailStatus(token) {
     });
   }).then((decoded) => {
     return new Promise((resolve, reject) => {
-      const sql = `UPDATE user SET user_email_confirmed = true WHERE user_id = ${decoded.userId}`;
-      db.query(sql, (err, result) => {
+      const sql = "UPDATE user SET user_email_confirmed = ? WHERE user_id = ?";
+      const queryVar = ["true", decoded.userId ]
+      db.query(sql, queryVar, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+  })
+}
+function updatePassword(token, password) {
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(decoded);
+      }
+    });
+  }).then((decoded) => {
+    return new Promise(async (resolve, reject) => {
+      const hash = await bcrypt.hash(password, 8)
+      const sql = "UPDATE user SET user_password = ? WHERE user_id = ?";
+      const queryVar = [hash, decoded.userId ]
+      db.query(sql,  queryVar, (err, result) => {
         if (err) {
           reject(err);
         } else {
@@ -155,7 +179,7 @@ function updateEmailStatus(token) {
 }
 function retrieveUserByEmail(email) {
   return new Promise((resolve, reject) => {
-    db.query('SELECT user_id, user_firstName FROM user WHERE user_email = ?', [email], (error, results) => {
+    db.query('SELECT * FROM user WHERE user_email = ?', [email], (error, results) => {
       if (error) {
         console.log(error)
         reject(error)
@@ -166,6 +190,6 @@ function retrieveUserByEmail(email) {
   })
 }
 module.exports = {
-  register, login, createToken, createEmailToken, sendEmail,
-  updateEmailStatus, retrieveUserByEmail
+  register, login, createToken, createEmailToken, sendEmail, updateEmailStatus,
+  updatePassword, retrieveUserByEmail
 };
