@@ -22,7 +22,7 @@ export default function RegistrationForm() {
             field: formik.values.field,
         }).then((response) => {
             setRegisterMsg(response.data.succMsg)
-            navigate("/login", {
+            navigate("/verify-email", {
                 state: {
                     emailAdr: response.data.user_email,
                 }

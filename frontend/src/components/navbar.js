@@ -16,7 +16,7 @@ export default function NavBar() {
                     {isLogged && <li><Link to="/home">Home</Link></li>}
                     {!isLogged && <li><Link to="/login">Login</Link></li>}
                     {isLogged && <li><Link to="/profile">Profile</Link></li>}
-                    {isLogged && <li><Link to="/" onClick={() => { dispatch(userSlice.actions.logoutRed()) }}>logout</Link></li>}
+                    {isLogged && <li><Link to="/logout" onClick={() => { dispatch(userSlice.actions.logoutRed()) }}>logout</Link></li>}
                     {!isLogged && <li><Link to="/register">Register</Link></li>}
                     {/* {!isLogged && <li><Link to="/teach">Join as teacher</Link></li>} */}
                 </ul>
