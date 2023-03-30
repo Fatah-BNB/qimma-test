@@ -4,6 +4,10 @@ import AdminLoginForm from "./components/login-admin";
 import RegistrationForm from './components/registration';
 import NavBar from './components/navbar';
 import Home from './components/home';
+import Landing from './components/Landing';
+import password_reset from './components/password_reset';
+import comfirm_email from './components/comfirmed';
+import Logout from './components/logout';
 import Profile from "./components/profile";
 import ErrorPage from "./errPage";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -16,11 +20,15 @@ function App() {
       <div className="App">
       <NavBar/>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<ProtectedRoute isLogged={!isLogged} child={<LoginForm />} redirect="/profile"/>} />
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<ProtectedRoute isLogged={!isLogged} child={<LoginForm />} redirect="/home"/>} />
           <Route path="/login-admin" element={<AdminLoginForm />} />
           <Route path="/register" element={<RegistrationForm />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/profile" element={<ProtectedRoute isLogged={isLogged} child={<Profile/>} redirect="/login"/>} />
+          <Route path="/password-reset" element={<password_reset />} />
+          <Route path="/verify-email" element={<comfirm_email/>} />
+          <Route path="/logout" element={<Logout/>} />
           <Route path="/*" element={<ErrorPage />} />
         </Routes>
       </div>

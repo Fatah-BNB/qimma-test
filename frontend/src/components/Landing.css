@@ -1,0 +1,12 @@
+.container {
+    position: relative;
+    height: 90vh;
+  }
+  
+  h1 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  

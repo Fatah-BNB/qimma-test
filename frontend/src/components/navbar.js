@@ -11,13 +11,14 @@ export default function NavBar() {
         <div>
             <nav>
                 <ul>
-                    <li id="logo"><Link to="/">AQRA</Link></li>
-                    <li><Link to="/">Home</Link></li>
+                    {!isLogged && <li id="logo"><Link to="/">Project AA</Link></li>}
+                    {isLogged && <li id="logo"><Link to="/home">Project AA</Link></li>}
+                    {isLogged && <li><Link to="/home">Home</Link></li>}
                     {!isLogged && <li><Link to="/login">Login</Link></li>}
                     {isLogged && <li><Link to="/profile">Profile</Link></li>}
                     {isLogged && <li><Link to="/" onClick={() => { dispatch(userSlice.actions.logoutRed()) }}>logout</Link></li>}
                     {!isLogged && <li><Link to="/register">Register</Link></li>}
-                    {!isLogged && <li><Link to="/teach">Join as teacher</Link></li>}
+                    {/* {!isLogged && <li><Link to="/teach">Join as teacher</Link></li>} */}
                 </ul>
             </nav>
         </div>

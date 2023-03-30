@@ -16,7 +16,7 @@ export default function LoginForm() {
       password: formik.values.password,
     }).then((response) => {
       dispatch(loginRed({ isLogged: true }))
-      navigate("/profile", {
+      navigate("/home", {
         state: {
           username: response.data.user_firstName,
           userType: response.data.userType
@@ -45,7 +45,6 @@ export default function LoginForm() {
   })
   return (
     <div>
-      <h1 >HOME</h1>
       <div className="login-form-container">
         <h2>Login</h2>
         <p>{loginMsg}</p>
