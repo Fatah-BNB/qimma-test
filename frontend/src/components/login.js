@@ -1,29 +1,32 @@
 import React, { useState } from "react"
 import { useFormik } from "formik"
 import Axios from "axios"
-import { useNavigate, useLocation } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import * as Yup from "yup"
 import "./login.css"
+import { loginRed } from "../slices/user-slice"
+import { useDispatch } from "react-redux"
 
 export default function LoginForm() {
   const [loginMsg, setLoginMsg] = useState("")
+  const dispatch = useDispatch()
   const login = () => {
     Axios.post("http://localhost:5000/login", {
       email: formik.values.email,
       password: formik.values.password,
     }).then((response) => {
-        navigate("/profile", {
-          state: {
-            username: response.data.user_firstName,
-            userType: response.data.userType
-          }
-        })
-    }).catch( (error) => {
+      dispatch(loginRed({ isLogged: true }))
+      navigate("/profile", {
+        state: {
+          username: response.data.user_firstName,
+          userType: response.data.userType
+        }
+      })
+    }).catch((error) => {
       setLoginMsg(error.response.data.errMsg)
     })
   }
   const navigate = useNavigate()
-  const location = useLocation()
   const formik = useFormik({
     initialValues: {
       email: "",

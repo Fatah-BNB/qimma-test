@@ -1,7 +1,6 @@
 import React, {useState} from "react"
 import {useFormik} from "formik"
 import Axios from "axios"
-import {useNavigate} from "react-router-dom"
 import * as Yup from "yup"
 import './login-admin.css'
 
@@ -20,7 +19,6 @@ export default function AdminLoginForm() {
       }
     })
   }
-  const navigate = useNavigate()
     const formik = useFormik({
         initialValues: {
             email: "",

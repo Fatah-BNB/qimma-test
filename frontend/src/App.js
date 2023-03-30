@@ -7,17 +7,20 @@ import Home from './components/home';
 import Profile from "./components/profile";
 import ErrorPage from "./errPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { useSelector } from "react-redux";
 
 function App() {
+  const isLogged = useSelector(state => state.userReducer.value.isLogged)
   return (
     <Router>
       <div className="App">
+      <NavBar/>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<LoginForm />} />
+          <Route path="/login" element={<ProtectedRoute isLogged={!isLogged} child={<LoginForm />} redirect="/profile"/>} />
           <Route path="/login-admin" element={<AdminLoginForm />} />
           <Route path="/register" element={<RegistrationForm />} />
-          <Route path="/profile" element={<ProtectedRoute isLogged={true} child={<Profile/>}/>} />
+          <Route path="/profile" element={<ProtectedRoute isLogged={isLogged} child={<Profile/>} redirect="/login"/>} />
           <Route path="/*" element={<ErrorPage />} />
         </Routes>
       </div>
