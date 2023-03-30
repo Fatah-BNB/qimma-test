@@ -9,7 +9,10 @@ dotenv.config({ path: './.env'});
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000', // replace with your frontend URL
+  credentials: true // enable the use of cookies
+}));
 app.use(cookieParser())
 // Parse URL-encoded bodies (as sent by HTML forms)
 app.use(express.urlencoded({ extended: false }));

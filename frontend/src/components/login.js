@@ -14,6 +14,8 @@ export default function LoginForm() {
     Axios.post("http://localhost:5000/login", {
       email: formik.values.email,
       password: formik.values.password,
+    },{
+      withCredentials: true // allow sending cookies
     }).then((response) => {
       dispatch(loginRed({ isLogged: true }))
       navigate("/home", {
