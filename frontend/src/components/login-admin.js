@@ -1,18 +1,23 @@
 import React, { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { useFormik } from "formik"
 import Axios from "axios"
 import * as Yup from "yup"
 import './login-admin.css'
+import { useDispatch } from "react-redux"
+import { checkAdminLoginStatus } from "../slices/admin-slice"
 
 export default function AdminLoginForm() {
-  const [loginStatus, setLoginStatus] = useState("");
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
   const [loginErrStatus, setLoginErrStatus] = useState("");
   const login = () => {
     Axios.post("http://localhost:5000/admin/login", {
       email: formik.values.email,
       password: formik.values.password,
-    }).then((response) => {
-      setLoginStatus(response.data.admin_username)
+    }, { withCredentials: true }).then((response) => {
+      navigate("/admin-dashboard", {state:{username:response.data.admin_username }})
+      dispatch(checkAdminLoginStatus())
     }).catch(error => { setLoginErrStatus(error.response.data.errMsg) })
   }
   const formik = useFormik({
@@ -35,7 +40,7 @@ export default function AdminLoginForm() {
   return (
     <div className="login-form-container">
       <h2>Login</h2>
-      {loginStatus !== "" ? <p>Welcome Admin : {loginStatus}</p> : <p>{loginErrStatus}</p>}
+      <p>{loginErrStatus}</p>
       <form onSubmit={formik.handleSubmit}>
         <div class="form-group">
           <label for="email">Email address</label>
