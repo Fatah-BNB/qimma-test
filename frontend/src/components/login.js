@@ -4,12 +4,12 @@ import Axios from "axios"
 import { useNavigate } from "react-router-dom"
 import * as Yup from "yup"
 import "./login.css"
-import { loginRed } from "../slices/user-slice"
 import { useDispatch } from "react-redux"
+import { checkLoginStatus } from "../slices/user-slice"
 
 export default function LoginForm() {
-  const [loginMsg, setLoginMsg] = useState("")
   const dispatch = useDispatch()
+  const [loginMsg, setLoginMsg] = useState("")
   const login = () => {
     Axios.post("http://localhost:5000/login", {
       email: formik.values.email,
@@ -17,13 +17,8 @@ export default function LoginForm() {
     },{
       withCredentials: true // allow sending cookies
     }).then((response) => {
-      dispatch(loginRed({ isLogged: true }))
-      navigate("/home", {
-        state: {
-          username: response.data.user_firstName,
-          userType: response.data.userType
-        }
-      })
+      navigate("/home")
+      dispatch(checkLoginStatus())
     }).catch((error) => {
       setLoginMsg(error.response.data.errMsg)
     })

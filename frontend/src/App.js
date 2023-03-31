@@ -11,20 +11,27 @@ import Logout from './components/logout';
 import Profile from "./components/profile";
 import ErrorPage from "./errPage";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { checkLoginStatus } from "./slices/user-slice";
+import { useEffect } from "react";
 
 function App() {
-  const isLogged = useSelector(state => state.userReducer.value.isLogged)
+  const dispatch = useDispatch()
+  const isLogged = useSelector(state => state.userReducer.isLogged)
+  useEffect(() => {
+    dispatch(checkLoginStatus())
+    console.log("on mount: ", isLogged)
+  })
   return (
     <Router>
       <div className="App">
       <NavBar/>
         <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<ProtectedRoute isLogged={!isLogged} child={<LoginForm />} redirect="/home"/>} />
-          <Route path="/login-admin" element={<AdminLoginForm />} />
-          <Route path="/register" element={<RegistrationForm />} />
-          <Route path="/home" element={<Home />} />
+          <Route path="/" element={<ProtectedRoute isLogged={!isLogged} child={<Landing />} redirect="/home"/>} />
+          <Route path="/login" element={<ProtectedRoute isLogged={!isLogged} child={<LoginForm />} redirect="/profile"/>} />
+          <Route path="/login-admin" element={<ProtectedRoute isLogged={!isLogged} child={<AdminLoginForm />} redirect="/profile"/>} />
+          <Route path="/register" element={<ProtectedRoute isLogged={!isLogged} child={<RegistrationForm />} redirect="/profile"/>} />
+          <Route path="/home" element={<ProtectedRoute isLogged={isLogged} child={<Home />} redirect="/login"/>} />
           <Route path="/profile" element={<ProtectedRoute isLogged={isLogged} child={<Profile/>} redirect="/login"/>} />
           <Route path="/password-reset" element={<Password_reset />} />
           <Route path="/verify-email" element={<Comfirm_email/>} />

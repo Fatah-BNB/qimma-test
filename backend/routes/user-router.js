@@ -13,7 +13,7 @@ router.post('/login', userController.loginController);
 router.post('/login/resend-email-verification', userController.resendEmailVerificationCntrl);
 router.post('/login/password-resetting', userController.passwordResettingCntrl);
 router.post('/login/password-resetting/:username/:token', userController.changePasswordCntrl);
-router.get('/logout', userController.logoutController);
+router.post('/logout', userController.logoutController);
 //-----------------Parent dashboards--------------------------------------------------------------------
 router.post('/dashboard/create-child-account', checkToken.verifyToken('parent'), parentController.createChildAccountCntrl);
 router.get('/dashboard/children-accounts', checkToken.verifyToken('parent'), parentController.getChildrenAccountsCntrl);

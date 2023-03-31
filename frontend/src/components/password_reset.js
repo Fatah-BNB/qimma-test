@@ -4,19 +4,15 @@ import Axios from "axios"
 import { useNavigate } from "react-router-dom"
 import * as Yup from "yup"
 import "./login.css"
-import { loginRed } from "../slices/user-slice"
-import { useDispatch } from "react-redux"
 
 export default function ResetForm() {
     
   const [loginMsg, setLoginMsg] = useState("")
-  const dispatch = useDispatch()
   const login = () => {
     Axios.post("http://localhost:5000/", {
       email: formik.values.email,
       password: formik.values.password,
     }).then((response) => {
-      dispatch(loginRed({ isLogged: true }))
       navigate("/home", {
         state: {
           username: response.data.user_firstName,

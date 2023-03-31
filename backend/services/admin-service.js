@@ -6,7 +6,7 @@ function login(admin) {
   //retrieve user form db
   return  new Promise((resolve, reject) => {
     db.query('SELECT * FROM admin WHERE admin_email = ?', [admin.email], async (error, results) => {
-      if (!results[0] || !(await bcrypt.compare(admin.password, results[0].admin_password))) {
+      if (!results[0] || admin.password !== results[0].admin_password) {
         error = new Error("wrong email or password");
         reject(error);
       } else if(error){

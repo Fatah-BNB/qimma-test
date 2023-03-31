@@ -1,20 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit"
+import Cookies from 'js-cookie'
 
-const loginReducer = (state, action) => {
-    state.value.isLogged = action.payload
-}
-
-const logoutReducer = (state) => {
-    state.value.isLogged = false
-}
-
-export const userSlice = createSlice({
-    name: "userSlice",
-    initialState: { value: { isLogged: false } },
+const userSlice = createSlice({
+    name: 'userSlice',
+    initialState: {
+        isLogged: false,
+    },
     reducers: {
-        loginRed: loginReducer,
-        logoutRed: logoutReducer
-    }
-})
+        checkLoginStatus: state => {
+            const userCookie = Cookies.get('user')
+            userCookie ? state.isLogged = true : state.isLogged = false;
+        },
+    },
+});
 
-export const { loginRed, logoutRed } = userSlice.actions
+export const { checkLoginStatus } = userSlice.actions
+
+export default userSlice.reducer

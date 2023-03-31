@@ -2,11 +2,16 @@ import React from "react"
 import { Link } from "react-router-dom"
 import "./navbar.css"
 import { useSelector, useDispatch } from "react-redux"
-import { userSlice } from "../slices/user-slice"
+import { useEffect } from "react"
+import { checkLoginStatus } from "../slices/user-slice"
 
 export default function NavBar() {
-    const isLogged = useSelector(state => state.userReducer.value.isLogged)
     const dispatch = useDispatch()
+    useEffect(() => {
+        dispatch(checkLoginStatus())
+        console.log("Navbar changed: ", isLogged)
+    })
+    const isLogged = useSelector(state => state.userReducer.isLogged)
     return (
         <div>
             <nav>
@@ -16,9 +21,8 @@ export default function NavBar() {
                     {isLogged && <li><Link to="/home">Home</Link></li>}
                     {!isLogged && <li><Link to="/login">Login</Link></li>}
                     {isLogged && <li><Link to="/profile">Profile</Link></li>}
-                    {isLogged && <li><Link to="/logout" onClick={() => { dispatch(userSlice.actions.logoutRed()) }}>logout</Link></li>}
+                    {isLogged && <li><Link to="/logout" >logout</Link></li>}
                     {!isLogged && <li><Link to="/register">Register</Link></li>}
-                    {/* {!isLogged && <li><Link to="/teach">Join as teacher</Link></li>} */}
                 </ul>
             </nav>
         </div>

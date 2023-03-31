@@ -4,11 +4,6 @@ const userService = require('../services/user-service')
 
 function loginController (req, res){
     const admin = req.body;
-    if( !admin.email || !admin.password ) {
-      return res.status(200).send({
-        errMsg: 'Please provide an email and password'
-      })
-    };
     adminService.login(admin).then((results) => {
       const cookieOptions = {
         expires: new Date(
@@ -22,7 +17,7 @@ function loginController (req, res){
       res.status(200).send(results[0]);
     })
     .catch((error) => {
-      res.status(200).send({errMsg: "incorrect email or password"});
+      res.status(401).send({errMsg: "incorrect email or password"});
     });
   }
 

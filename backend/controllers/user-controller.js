@@ -28,11 +28,11 @@ function loginController(req, res) {
       expires: new Date(
         Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000
       ),
-      httpOnly: true,
+      httpOnly: false,
       secure: true
     }
     const token = userService.createToken(results[0].user_id, results[0].userTypeIds, results[0].userType)
-    res.cookie('jwt', token, cookieOptions);
+    res.cookie('user', token, cookieOptions);
     res.status(200).send(results[0]);
   })
     .catch((error) => {
@@ -42,10 +42,11 @@ function loginController(req, res) {
 
 
 function logoutController(req, res) {
-  res.cookie('jwt', 'logout', {
-    expires: new Date(Date.now() + 1 * 1000),
-    httpOnly: true
-  });
+  res.clearCookie('user')
+  // res.cookie('user', 'logout', {
+  //   expires: new Date(Date.now() + 1 * 1000),
+  //   httpOnly: false
+  // });
   res.status(200).send({ succMsg: "cookie is cleard" });
 }
 function updateEmailStatusCntrl(req, res) {
