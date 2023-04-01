@@ -10,7 +10,7 @@ function registerController(req, res) {
   userService.register(user).then(async (results) => {//after the user register the server send an email to the user
     //1) create token for email 
     const emailToken = userService.createEmailToken(results[0].user_firstName, results[0].user_id);
-    var fullUrl = req.protocol + '://' + req.get('host') + 'verify-user-email' + '/' + results[0].user_firstName + '/' + emailToken
+    var fullUrl = req.protocol + '://' + req.get('host') + '/verify-user-email' + '/' + results[0].user_firstName + '/' + emailToken
     //2) send the email
     userService.sendEmail(results[0].user_email, fullUrl, 'Email confirmation');
     res.status(200).send({ succMsg: "Account created", results: results[0] });
