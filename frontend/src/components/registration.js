@@ -47,7 +47,8 @@ export default function RegistrationForm() {
         },
         validationSchema: Yup.object({
             email: Yup.string().email("invalid email address").required("required"),
-            password: Yup.string().min(8, "password must be 8 characters long").required("required"),
+            password: Yup.string().min(8, "password must be 8 characters long").matches(/^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/,
+            'Password must contain at least one uppercase character, one symbol, and one number').required("required"),
             passwordc: Yup.string().oneOf([Yup.ref("password"), null], "passwords must match").required("required"),
             firstname: Yup.string().required("required"),
             lastname: Yup.string().required("required"),
