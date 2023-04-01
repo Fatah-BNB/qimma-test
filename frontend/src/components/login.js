@@ -10,11 +10,20 @@ import { checkLoginStatus } from "../slices/user-slice"
 export default function LoginForm() {
   const dispatch = useDispatch()
   const [loginMsg, setLoginMsg] = useState("")
+  const resendEmail = () => {
+    Axios.post("http://localhost:5000/login/resend-email-verification", {
+      email: formik.values.email
+    }).then(response => {
+      setLoginMsg(response.data.succMsg)
+    }).catch(error =>{
+      setLoginMsg(error.response.data.errMsg)
+    })
+  }
   const login = () => {
     Axios.post("http://localhost:5000/login", {
       email: formik.values.email,
       password: formik.values.password,
-    },{
+    }, {
       withCredentials: true // allow sending cookies
     }).then((response) => {
       navigate("/home")
@@ -68,6 +77,8 @@ export default function LoginForm() {
             />
             {formik.touched.password && formik.errors.password ? <p className="error-message">{formik.errors.password}</p> : null}
           </div>
+          {loginMsg === "confirm you email to log in" && <p className="option" onClick={resendEmail}>Resend verification email</p>}
+          <p className="option">Forgot password</p>
           <button type="submit">Login</button>
         </form>
       </div>

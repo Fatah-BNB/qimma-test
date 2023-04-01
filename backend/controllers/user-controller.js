@@ -72,9 +72,9 @@ function resendEmailVerificationCntrl(req, res) {
       var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl + '/' + results[0].user_firstName + '/' + emailToken
       //2) send the email
       userService.sendEmail(results[0].user_email, fullUrl, 'Email confirmation');
-      res.status(200).send({ succMsg: "check ur email" });
+      res.status(200).send({ succMsg: "Verification email sent" });
     } catch (error) {
-      res.status(401).send({ errMsg: "Faild to send email" })
+      res.status(401).send({ errMsg: "Faild to send email (possible reason: no email address specified)" })
     }
   })
     .catch((error) => {
@@ -91,7 +91,7 @@ function passwordResettingCntrl(req, res) {
       var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl + '/' + results[0].user_firstName + '/' + emailToken
       //2) send the email
       userService.sendEmail(results[0].user_email, fullUrl, 'Password resetting');
-      res.status(200).send({ succMsg: "check ur email" });
+      res.status(200).send({ succMsg: "check your email" });
     } catch (error) {
       res.status(401).send({ errMsg: "Faild to send email" })
     }
