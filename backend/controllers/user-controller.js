@@ -69,7 +69,7 @@ function resendEmailVerificationCntrl(req, res) {
     try {
       //1) create token for email 
       const emailToken = userService.createEmailToken(results[0].user_firstName, results[0].user_id);
-      var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl + '/' + results[0].user_firstName + '/' + emailToken
+      var fullUrl = req.protocol + '://' + req.get('host') + '/verify-user-email' + '/' + results[0].user_firstName + '/' + emailToken
       //2) send the email
       userService.sendEmail(results[0].user_email, fullUrl, 'Email confirmation');
       res.status(200).send({ succMsg: "Verification email sent" });
