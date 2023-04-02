@@ -1,21 +1,25 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useFormik } from "formik"
 import Axios from "axios"
 import { useNavigate } from "react-router-dom"
 import * as Yup from "yup"
 import "./login.css"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { checkLoginStatus } from "../slices/user-slice"
 
 export default function LoginForm() {
+  useEffect(() => {
+    console.log("Login mounted")
+  })
   const dispatch = useDispatch()
+  // const isLogged = useSelector(state => state.userReducer.isLogged)
   const [loginMsg, setLoginMsg] = useState("")
   const resendEmail = () => {
     Axios.post("http://localhost:5000/login/resend-email-verification", {
       email: formik.values.email
     }).then(response => {
       setLoginMsg(response.data.succMsg)
-    }).catch(error =>{
+    }).catch(error => {
       setLoginMsg(error.response.data.errMsg)
     })
   }
@@ -25,9 +29,10 @@ export default function LoginForm() {
       password: formik.values.password,
     }, {
       withCredentials: true // allow sending cookies
-    }).then((response) => {
+    }).then(async (response) => {
+      await dispatch(checkLoginStatus())
+      // console.log("IS LOGGED --> ", isLogged)
       navigate("/home")
-      dispatch(checkLoginStatus())
     }).catch((error) => {
       setLoginMsg(error.response.data.errMsg)
     })

@@ -1,11 +1,13 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import "./logout.css"
 import Axios from "axios"
 import { useSelector, useDispatch } from "react-redux"
 import { checkLoginStatus } from "../slices/user-slice"
-import { useEffect } from "react"
 
 export default function Logout() {
+    useEffect(() => {
+        console.log("Logout mounted")
+    })
     const dispatch = useDispatch()
     useEffect(() => {
         logout()
