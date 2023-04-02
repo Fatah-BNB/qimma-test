@@ -42,11 +42,11 @@ export default function LoginForm() {
       email: Yup.string().email("this email address is not valid").required("required"),
       password: Yup.string().min(8, "password must be 8 characters long").required("required"),
     }),
-    onSubmit: (values, { resetForm }) => {
+    onSubmit: (values) => {
       console.log(values)
       //consume the login api
       login()
-      resetForm()
+      formik.setFieldValue("password", "")
     }
   })
   return (
