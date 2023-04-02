@@ -6,6 +6,7 @@ import * as Yup from "yup"
 import "./login.css"
 import { useDispatch, useSelector } from "react-redux"
 import { checkLoginStatus } from "../slices/user-slice"
+import NavBar from "./navbar"
 
 export default function LoginForm() {
   useEffect(() => {
@@ -56,6 +57,7 @@ export default function LoginForm() {
   })
   return (
     <div>
+    <NavBar/>
       <div className="login-form-container">
         <h2>Login</h2>
         <p>{loginMsg}</p>
@@ -85,6 +87,7 @@ export default function LoginForm() {
           {loginMsg === "confirm you email to log in" && <p className="option" onClick={resendEmail}>Resend verification email</p>}
           <p className="option">Forgot password</p>
           <button type="submit">Login</button>
+          <p>Don't have an account yet? <span onClick={()=>{navigate("/register")}} className="option" style={{fontWeight: "bold"}}>Create account</span></p>
         </form>
       </div>
     </div>

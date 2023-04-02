@@ -3,6 +3,7 @@ import "./logout.css"
 import Axios from "axios"
 import { useSelector, useDispatch } from "react-redux"
 import { checkLoginStatus } from "../slices/user-slice"
+import NavBar from "./navbar"
 
 export default function Logout() {
     useEffect(() => {
@@ -32,6 +33,7 @@ export default function Logout() {
     }
     return (
         <div className="container">
+        <NavBar/>
             <p>{coockieMsg}</p>
             <h1>Thank you <br />You are logged out.</h1>
         </div>

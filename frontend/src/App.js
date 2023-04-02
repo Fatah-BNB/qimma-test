@@ -30,7 +30,6 @@ function App() {
   return (
     <Router>
       <div className="App">
-      <NavBar/>
         <Routes>
           <Route path="/" element={<ProtectedRoute isLogged={!isLogged} child={<Landing />} redirect="/home"/>} />
           <Route path="/login" element={<ProtectedRoute isLogged={!isLogged} child={<LoginForm />} redirect="/profile"/>} />
@@ -41,8 +40,8 @@ function App() {
           <Route path="/verify-email" element={<Comfirm_email/>} />
           <Route path="/logout" element={<Logout/>} />
           
-          <Route path="/login-admin" element={<ProtectedRoute isLogged={!isLogged && !adminIsLogged} child={<AdminLoginForm />} redirect="/profile"/>} />\
-          <Route path="/admin-dashboard" element={<ProtectedRoute isLogged={!isLogged && adminIsLogged} child={<AdminDashboard />} redirect="/profile"/>} />\
+          <Route path="/login-admin" element={<ProtectedRoute isLogged={!isLogged && !adminIsLogged} child={<AdminLoginForm />} redirect="/admin-dashboard"/>} />\
+          <Route path="/admin-dashboard" element={<ProtectedRoute isLogged={!isLogged && adminIsLogged} child={<AdminDashboard />} redirect="/login-admin"/>} />\
 
           <Route path="/*" element={<ErrorPage />} />
         </Routes>

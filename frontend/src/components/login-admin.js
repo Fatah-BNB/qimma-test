@@ -19,7 +19,7 @@ export default function AdminLoginForm() {
       email: formik.values.email,
       password: formik.values.password,
     }, { withCredentials: true }).then(async (response) => {
-      await dispatch(checkAdminLoginStatus())
+      await   dispatch(checkAdminLoginStatus())
       navigate("/admin-dashboard", {state:{username:response.data.admin_username }})
     }).catch(error => { setLoginErrStatus(error.response.data.errMsg) })
   }

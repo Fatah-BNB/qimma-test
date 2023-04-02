@@ -9,7 +9,8 @@ export default function AdminDashboard() {
     const location = useLocation()
     return (
         <div>
-            {location.state.username && <h1>Welcom Admin<br/>{location.state.username}</h1>}
+            {/* {location.state.username && <h1>Welcom Admin<br/>{location.state.username}</h1>} */}
+            <h1>ADMIN DASHBOARD</h1>
         </div>
     )
 }
