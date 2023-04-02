@@ -9,7 +9,6 @@ const userSlice = createSlice({
     reducers: {
         checkLoginStatus: state => {
             const userCookie = Cookies.get('user')
-            console.log("use cookie: ", userCookie)
             userCookie ? state.isLogged = true : state.isLogged = false;
         },
     },

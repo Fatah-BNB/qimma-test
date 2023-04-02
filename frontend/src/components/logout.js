@@ -6,11 +6,9 @@ import { checkLoginStatus } from "../slices/user-slice"
 import NavBar from "./navbar"
 
 export default function Logout() {
-    useEffect(() => {
-        console.log("Logout mounted")
-    })
     const dispatch = useDispatch()
     useEffect(() => {
+        console.log("Logout mounted")
         logout()
         dispatch(checkLoginStatus())
         console.log("on Mount logout: ", isLogged)
