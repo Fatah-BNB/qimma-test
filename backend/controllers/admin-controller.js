@@ -21,6 +21,11 @@ function loginController (req, res){
     });
   }
 
+  function logoutController(req, res) {
+    res.clearCookie('admin')
+    res.status(200).send({ succMsg: "admin cookie is cleard" });
+  }
+
 function getAllUsersController (req, res){
     userService.getFromTable('user').then((results) => {
       res.status(200).send({ ok: true, user: results });
@@ -29,4 +34,4 @@ function getAllUsersController (req, res){
       res.status(400).send({ ok: false, error: error.message });
     });
 }
-  module.exports = {loginController, getAllUsersController};
+  module.exports = {loginController, logoutController, getAllUsersController};

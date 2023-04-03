@@ -1,13 +1,14 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import "./logout.css"
 import Axios from "axios"
 import { useSelector, useDispatch } from "react-redux"
 import { checkLoginStatus } from "../slices/user-slice"
-import { useEffect } from "react"
+import NavBar from "./navbar"
 
 export default function Logout() {
     const dispatch = useDispatch()
     useEffect(() => {
+        console.log("Logout mounted")
         logout()
         dispatch(checkLoginStatus())
         console.log("on Mount logout: ", isLogged)
@@ -30,6 +31,7 @@ export default function Logout() {
     }
     return (
         <div className="container">
+        <NavBar/>
             <p>{coockieMsg}</p>
             <h1>Thank you <br />You are logged out.</h1>
         </div>

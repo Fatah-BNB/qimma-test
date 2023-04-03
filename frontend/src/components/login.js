@@ -1,21 +1,26 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useFormik } from "formik"
 import Axios from "axios"
 import { useNavigate } from "react-router-dom"
 import * as Yup from "yup"
 import "./login.css"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { checkLoginStatus } from "../slices/user-slice"
+import NavBar from "./navbar"
 
 export default function LoginForm() {
+  useEffect(() => {
+    console.log("Login mounted")
+  })
   const dispatch = useDispatch()
+  // const isLogged = useSelector(state => state.userReducer.isLogged)
   const [loginMsg, setLoginMsg] = useState("")
   const resendEmail = () => {
     Axios.post("http://localhost:5000/login/resend-email-verification", {
       email: formik.values.email
     }).then(response => {
       setLoginMsg(response.data.succMsg)
-    }).catch(error =>{
+    }).catch(error => {
       setLoginMsg(error.response.data.errMsg)
     })
   }
@@ -25,9 +30,10 @@ export default function LoginForm() {
       password: formik.values.password,
     }, {
       withCredentials: true // allow sending cookies
-    }).then((response) => {
+    }).then(async (response) => {
+      await dispatch(checkLoginStatus())
+      // console.log("IS LOGGED --> ", isLogged)
       navigate("/home")
-      dispatch(checkLoginStatus())
     }).catch((error) => {
       setLoginMsg(error.response.data.errMsg)
     })
@@ -42,15 +48,16 @@ export default function LoginForm() {
       email: Yup.string().email("this email address is not valid").required("required"),
       password: Yup.string().min(8, "password must be 8 characters long").required("required"),
     }),
-    onSubmit: (values, { resetForm }) => {
+    onSubmit: (values) => {
       console.log(values)
       //consume the login api
       login()
-      resetForm()
+      formik.setFieldValue("password", "")
     }
   })
   return (
     <div>
+    <NavBar/>
       <div className="login-form-container">
         <h2>Login</h2>
         <p>{loginMsg}</p>
@@ -80,6 +87,7 @@ export default function LoginForm() {
           {loginMsg === "confirm you email to log in" && <p className="option" onClick={resendEmail}>Resend verification email</p>}
           <p className="option">Forgot password</p>
           <button type="submit">Login</button>
+          <p>Don't have an account yet? <span onClick={()=>{navigate("/register")}} className="option" style={{fontWeight: "bold"}}>Create account</span></p>
         </form>
       </div>
     </div>

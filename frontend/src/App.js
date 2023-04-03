@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import LoginForm from './components/login';
 import AdminLoginForm from "./components/login-admin";
 import RegistrationForm from './components/registration';
-import NavBar from './components/navbar';
 import Home from './components/home';
 import Landing from './components/Landing';
 import Password_reset from './components/password_reset';
@@ -22,6 +21,7 @@ function App() {
   const isLogged = useSelector(state => state.userReducer.isLogged)
   const adminIsLogged = useSelector(state => state.adminReducer.isLogged)
   useEffect(() => {
+
     dispatch(checkLoginStatus())
     dispatch(checkAdminLoginStatus())
     console.log("on mount: ", isLogged)
@@ -30,19 +30,19 @@ function App() {
   return (
     <Router>
       <div className="App">
-      <NavBar/>
         <Routes>
           <Route path="/" element={<ProtectedRoute isLogged={!isLogged} child={<Landing />} redirect="/home"/>} />
-          <Route path="/login" element={<ProtectedRoute isLogged={!isLogged} child={<LoginForm />} redirect="/profile"/>} />
-          <Route path="/register" element={<ProtectedRoute isLogged={!isLogged} child={<RegistrationForm />} redirect="/profile"/>} />
           <Route path="/home" element={<ProtectedRoute isLogged={isLogged} child={<Home />} redirect="/login"/>} />
-          <Route path="/profile" element={<ProtectedRoute isLogged={isLogged} child={<Profile/>} redirect="/login"/>} />
-          <Route path="/password-reset" element={<Password_reset />} />
-          <Route path="/verify-email" element={<Comfirm_email/>} />
+
+          <Route path="/register" element={<ProtectedRoute isLogged={!isLogged} child={<RegistrationForm />} redirect="/profile"/>} />
+          <Route path="/login" element={<ProtectedRoute isLogged={!isLogged} child={<LoginForm />} redirect="/profile"/>} />
           <Route path="/logout" element={<Logout/>} />
+          <Route path="/profile" element={<ProtectedRoute isLogged={isLogged} child={<Profile/>} redirect="/login"/>} />
+          <Route path="/verify-email" element={<Comfirm_email/>} />
+          <Route path="/password-reset" element={<Password_reset />} />
           
-          <Route path="/login-admin" element={<ProtectedRoute isLogged={!isLogged && !adminIsLogged} child={<AdminLoginForm />} redirect="/profile"/>} />\
-          <Route path="/admin-dashboard" element={<ProtectedRoute isLogged={!isLogged && adminIsLogged} child={<AdminDashboard />} redirect="/profile"/>} />\
+          <Route path="/login-admin" element={<ProtectedRoute isLogged={!adminIsLogged} child={<AdminLoginForm />} redirect="/admin-dashboard"/>} />\
+          <Route path="/admin-dashboard" element={<ProtectedRoute isLogged={adminIsLogged} child={<AdminDashboard />} redirect="/login-admin"/>} />\
 
           <Route path="/*" element={<ErrorPage />} />
         </Routes>
