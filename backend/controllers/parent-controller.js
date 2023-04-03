@@ -1,5 +1,5 @@
 const parentService = require('../services/parent-service');
-const userService = require('../services/user-service');
+const userService = require('../services/user-auth-service');
 
 function createChildAccountCntrl(req, res) {
     const student = req.body

@@ -1,7 +1,7 @@
 const express = require('express');
 
 const router = express.Router();
-const userController = require('../controllers/user-controller');
+const userController = require('../controllers/user-auth-controller');
 const parentController = require('../controllers/parent-controller');
 const checkToken = require('../middleware/checkToken');
 
@@ -14,6 +14,8 @@ router.post('/login/resend-email-verification', userController.resendEmailVerifi
 router.post('/login/password-resetting', userController.passwordResettingCntrl);
 router.post('/login/password-resetting/:username/:token', userController.changePasswordCntrl);
 router.post('/logout', userController.logoutController);
+//-----------------profile----------------------------------------------------------------------
+//router.get('/profile', checkToken.verifyToken(['student', 'instructor', 'parent']), userController)
 //-----------------Parent dashboards--------------------------------------------------------------------
 router.post('/dashboard/create-child-account', checkToken.verifyToken('parent'), parentController.createChildAccountCntrl);
 router.get('/dashboard/children-accounts', checkToken.verifyToken('parent'), parentController.getChildrenAccountsCntrl);
