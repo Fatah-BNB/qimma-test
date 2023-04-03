@@ -4,21 +4,40 @@ const jwt = require('jsonwebtoken');
 
 
 function registerController(req, res) {
-  console.log('req.bode', req.body);
 
-  const user = req.body;
-  userService.register(user).then(async (results) => {//after the user register the server send an email to the user
-    //1) create token for email 
-    const emailToken = userService.createEmailToken(results[0].user_firstName, results[0].user_id);
-    var fullUrl = req.protocol + '://' + req.get('host') + '/verify-user-email' + '/' + results[0].user_firstName + '/' + emailToken
-    //2) send the email
-    userService.sendEmail(results[0].user_email, fullUrl, 'Email confirmation');
-    res.status(200).send({ succMsg: "Account created", results: results[0] });
-  })
-    .catch((error) => {
+  if(req.body.hasOwnProperty('tier')){
+    const student = req.body
+    userService.userRegister(student).then(userService.studentRegister).then(async(results)=>{
+      const emailToken = userService.createEmailToken(results[0].user_firstName, results[0].user_id);
+      var fullUrl = req.protocol + '://' + req.get('host') + '/verify-user-email' + '/' + results[0].user_firstName + '/' + emailToken
+      userService.sendEmail(results[0].user_email, fullUrl, 'Email confirmation');
+      res.status(200).send({ succMsg: "Account created", results: results[0] });
+    }).catch((error) => {
+      res.status(401).send({ errMsg: error.message });
+    });
+  }else if(req.body.hasOwnProperty('field')){
+
+    const instructor = req.body
+    userService.userRegister(instructor).then(userService.instuctorRegister).then(async(results)=>{
+      const emailToken = userService.createEmailToken(results[0].user_firstName, results[0].user_id);
+      var fullUrl = req.protocol + '://' + req.get('host') + '/verify-user-email' + '/' + results[0].user_firstName + '/' + emailToken
+      userService.sendEmail(results[0].user_email, fullUrl, 'Email confirmation');
+      res.status(200).send({ succMsg: "Account created", results: results[0] });
+    }).catch((error) => {
       res.status(401).send({ errMsg: error.message });
     });
 
+  }else{
+    const parent = req.body
+    userService.userRegister(parent).then(userService.parentRegister).then(async(results)=>{
+      const emailToken = userService.createEmailToken(results[0].user_firstName, results[0].user_id);
+      var fullUrl = req.protocol + '://' + req.get('host') + '/verify-user-email' + '/' + results[0].user_firstName + '/' + emailToken
+      userService.sendEmail(results[0].user_email, fullUrl, 'Email confirmation');
+      res.status(200).send({ succMsg: "Account created", results: results[0] });
+    }).catch((error) => {
+      res.status(401).send({ errMsg: error.message });
+    });
+  }
 }
 
 function loginController(req, res) {

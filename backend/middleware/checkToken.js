@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 function verifyToken(userType){
   return function verifyTokenMiddleware(req, res, next){
-    const token = req.cookies.jwt;
+    const token = req.cookies.user;
     if(!token){
       res.status(403).send({error: 'Token not found'});
     }

@@ -2,14 +2,15 @@ const parentService = require('../services/parent-service');
 const userService = require('../services/user-service');
 
 function createChildAccountCntrl(req, res) {
-    const user = req.body
+    const student = req.body
     const parentId = req.authData.userTypeIds
     console.log("parent ID", parentId)
-    parentService.registerChild(user, parentId).then(async (results) => {//after the user register the server send an email to the user
+    parentService.registerChild(student, parentId).then(async (results) => {//after the user register the server send an email to the user
         //1) create token for email 
         const emailToken = userService.createEmailToken(results[0].user_firstName, results[0].user_id);
         //2) send the email
-        userService.sendEmail(results[0].user_firstName, results[0].user_email, emailToken);
+        var fullUrl = req.protocol + '://' + req.get('host') + '/verify-user-email' + '/' + results[0].user_firstName + '/' + emailToken
+        userService.sendEmail(results[0].user_email, fullUrl, 'Email confirmation');
         res.status(200).send({ succMsg: "Account created", results: results[0] });
     }).catch((error) => {
         res.status(401).send({ errMsg: "Faild to create account" });

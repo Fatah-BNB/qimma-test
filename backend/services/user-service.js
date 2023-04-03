@@ -5,8 +5,8 @@ const nodemailer = require('nodemailer');
 const dotenv = require('dotenv');
 dotenv.config({ path: './.env' });
 
-function register(user) {
-  return bcrypt.hash(user.password, 8).then((hash) => {
+function userRegister(user) {
+  return bcrypt.hash(user.password, 8).then((hash) => {// save user in user table 
     return new Promise((resolve, reject) => {
       console.log(user)
       const query = "INSERT INTO user (user_email, user_password, user_firstName, user_lastName, user_gender, user_birthDate, user_phoneNumber, user_card_id, wilaya_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -18,74 +18,93 @@ function register(user) {
         }
         resolve(results);
       });
-    }).then((results) => {
-      return new Promise((resolve, reject) => {
-        db.query('SELECT * FROM user WHERE user_id = ?', [results.insertId], (error, results) => {
-          if (error) {
-            reject(error)
-          }else{
-            resolve(results)
-          }
-        })
-      })
-    }).then((OldResults) => {
-      return new Promise((resolve, reject) => {//set userType
-        let queryVar
-        switch(user.userType){
-          case "student":
-            queryVar = { user_id: OldResults[0].user_id, tier: user.tier};
-            break;
-          case "instructor":
-            queryVar = { user_id: OldResults[0].user_id};
-            break;
-          default:
-            queryVar = { user_id: OldResults[0].user_id};
-        }
-        db.query("INSERT INTO " + user.userType + " SET ?", queryVar, (error, results) => {
-          if (error) {
-            reject(error)
-          }else if(user.field){//save the instructor id in OldResults
-            OldResults[0].instructorId = results.insertId;
-            resolve(OldResults)
-          }else{
-            resolve(OldResults)
-          }
-          
-        });
-      })
-    }).then((OldResults) =>{
-      return new Promise((resolve, reject)=>{
-        if(user.field){
-          db.query('SELECT * FROM field WHERE field_name = ?', [user.field], (error, results)=>{
-            if(error){
-              reject(error)
-            }else{// save field code in oldResults
-              OldResults[0].fieldId = results[0].field_code;
-              resolve(OldResults);
-            }
-          })
-        }else{
-          resolve(OldResults)
+    })
+  }).then((results) => {// retrieve user info for sending email
+    return new Promise((resolve, reject) => {
+      db.query('SELECT * FROM user WHERE user_id = ?', [results.insertId], (error, results) => {
+        if (error) {
+          reject(error)
+        } else if (user.hasOwnProperty('tier')) {
+          results[0].tier = user.tier
+          console.log('saved student: ', results)
+          resolve(results)
+        } else if (user.hasOwnProperty('field')) {
+          results[0].field = user.field
+          console.log('saved instructor: ', results)
+          resolve(results)
+        } else {
+          resolve(results)
         }
       })
-    }).then((OldResults)=>{
-      return new Promise((resolve, reject)=>{
-        if(OldResults[0].hasOwnProperty('fieldId')){
-          const queryVar = {instructor_id: OldResults[0].instructorId, field_code: OldResults[0].fieldId}
-          db.query("INSERT INTO instructor_has_field SET ?", queryVar, (error, results) => {
-            if (error) {
-              reject(error)
-            }else{
-              resolve(OldResults)
-            }
-            
-          });
-        }else{
-          resolve(OldResults)
-        }
-      })
+    })
+  })
+}
+
+function parentRegister(OldResults) {
+  return new Promise((resolve, reject) => {
+    const queryVar = { user_id: OldResults[0].user_id };
+    db.query("INSERT INTO parent SET ?", queryVar, (error, results) => {
+      if (error) {
+        reject(error)
+      } else {
+        resolve(OldResults)
+      }
     });
-  });
+  })
+}
+
+function studentRegister(OldResults) {
+  return new Promise((resolve, reject) => {
+    db.query('SELECT * FROM tier WHERE tier_name = ?', [OldResults[0].tier], (error, results) => {
+      if (error) {
+        console.log(error)
+        reject(error)
+      } else {// save field code in oldResults
+        OldResults[0].tierId = results[0].tier_code;
+        console.log("stduent 2", OldResults)
+        resolve(OldResults);
+      }
+    })
+  }).then((OldResults) => {
+    return new Promise((resolve, reject) => {//set userType
+      const queryVar = { user_id: OldResults[0].user_id, tier_code: OldResults[0].tierId };
+      db.query("INSERT INTO student SET ?", queryVar, (error, results) => {
+        if (error) {
+          console.log(error)
+          console.log("stduent 3 ", OldResults)
+          reject(error)
+        } else {
+          console.log("stduent 3 ", OldResults)
+          resolve(OldResults)
+        }
+      });
+    })
+  })
+}
+
+function instuctorRegister(OldResults) {
+  return new Promise((resolve, reject) => {
+    db.query('SELECT * FROM field WHERE field_name = ?', [OldResults[0].field], (error, results) => {
+      if (error) {
+        reject(error)
+      } else {// save field code in oldResults
+        OldResults[0].fieldId = results[0].field_code;
+        resolve(OldResults);
+      }
+    })
+  }).then((OldResults) => {
+    return new Promise((resolve, reject) => {
+      const queryVar = { user_id: OldResults[0].user_id, field_code: OldResults[0].fieldId };
+      db.query("INSERT INTO instructor SET ?", queryVar, (error, results) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(OldResults)
+        }
+
+      });
+    })
+  })
 }
 
 function login(user) {
@@ -93,7 +112,7 @@ function login(user) {
   return new Promise((resolve, reject) => {
     db.query('SELECT * FROM user WHERE user_email = ?', [user.email], async (error, results) => {
       console.log(results[0]);
-      if (!results[0]  || !(await bcrypt.compare(user.password, results[0].user_password))) {
+      if (!results[0] || !(await bcrypt.compare(user.password, results[0].user_password))) {
         const AccountError = new Error("email or password incorrect");
         reject(AccountError);
       } else if (results[0].user_email_confirmed == 'false') {
@@ -150,17 +169,18 @@ function createEmailToken(username, userId) {
 }
 
 function sendEmail(userEmail, url, subject) {
+  console.log("calling send email")
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: process.env.GMAIL_USER, 
-      pass: process.env.GMAIL_PASSWORD 
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_PASSWORD
     }
   });
   const mailOptions = {
-    from: process.env.GMAIL_USER, 
-    to: userEmail, 
-    subject: subject, 
+    from: process.env.GMAIL_USER,
+    to: userEmail,
+    subject: subject,
     html: url
   };
 
@@ -190,7 +210,7 @@ function updateEmailStatus(token) {
   }).then((decoded) => {
     return new Promise((resolve, reject) => {
       const sql = "UPDATE user SET user_email_confirmed = ? WHERE user_id = ?";
-      const queryVar = ["true", decoded.userId ]
+      const queryVar = ["true", decoded.userId]
       db.query(sql, queryVar, (err, result) => {
         if (err) {
           reject(err);
@@ -214,8 +234,8 @@ function updatePassword(token, password) {
     return new Promise(async (resolve, reject) => {
       const hash = await bcrypt.hash(password, 8)
       const sql = "UPDATE user SET user_password = ? WHERE user_id = ?";
-      const queryVar = [hash, decoded.userId ]
-      db.query(sql,  queryVar, (err, result) => {
+      const queryVar = [hash, decoded.userId]
+      db.query(sql, queryVar, (err, result) => {
         if (err) {
           reject(err);
         } else {
@@ -238,9 +258,9 @@ function retrieveUserByEmail(email) {
   })
 }
 
-function getFromTable(tableName){
+function getFromTable(tableName) {
   return new Promise((resolve, reject) => {
-    db.query('SELECT * FROM ' +tableName, (error, results) => {
+    db.query('SELECT * FROM ' + tableName, (error, results) => {
       if (error) {
         console.log(error)
         reject(error)
@@ -251,6 +271,7 @@ function getFromTable(tableName){
   })
 }
 module.exports = {
-  register, login, createToken, createEmailToken, sendEmail, updateEmailStatus,
+  instuctorRegister, parentRegister, studentRegister, userRegister,
+  login, createToken, createEmailToken, sendEmail, updateEmailStatus,
   updatePassword, retrieveUserByEmail, getFromTable
 };
