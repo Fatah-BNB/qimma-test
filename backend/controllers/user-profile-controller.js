@@ -20,6 +20,15 @@ function updateFieldCntrl(req, res){
         res.status(400).send({errMsg: "cannot update user "+field})
     })
 }
+function updatePasswordCntrl(req, res){
+    const userId = req.authData.userId
+    const passwords = req.body
+    userProfileService.updatePassword(userId, passwords).then((results)=>{
+        res.status(200).send({ succMsg: "update password ", results: results[0] });
+    }).catch((error)=>{
+        res.status(400).send({errMsg: error})
+    })
+}
 
 function updateInfoCntrl(req, res){
     const userId = req.authData.userId
@@ -42,4 +51,4 @@ function uploadAvatarCntrl(req, res){
 }
 
 module.exports = {getUserInfoCntrl, updateFieldCntrl,
-     updateInfoCntrl, uploadAvatarCntrl}
+     updateInfoCntrl, uploadAvatarCntrl, updatePasswordCntrl}

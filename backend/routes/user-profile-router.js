@@ -12,6 +12,7 @@ router.put('/edit-user-info/:field', checkToken.verifyToken(['student', 'instruc
 //update multiple fields
 router.put('/edit-user-info', checkToken.verifyToken(['student', 'instructor', 'parent']), userProfileController.updateInfoCntrl)
 router.post('/edit-user-info/avatar', checkToken.verifyToken(['student', 'instructor', 'parent']), configStorage.single('avatar'), userProfileController.uploadAvatarCntrl)
+router.put('/edit-user-info/security/password', checkToken.verifyToken(['student', 'instructor', 'parent']), userProfileController.updatePasswordCntrl)
 
 
 module.exports = router;

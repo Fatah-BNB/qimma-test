@@ -1,7 +1,9 @@
 const db = require('../config/db');
+const bcrypt = require('bcrypt');
 const dotenv = require('dotenv');
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
+const transporter = require('../config/transporter')
 dotenv.config({ path: './.env' });
 
 function getUserInfo(userId) {
@@ -77,20 +79,20 @@ function uploadAvatar(imageUrl, userId) {
         cloudinary.uploader.upload(imageUrl, {
             resource_type: "image",
             type: "upload",
-            public_id: "avatar_"+userId,
+            public_id: "avatar_" + userId,
             overwrite: true
         }, function (error, result) {
             if (error instanceof multer.MulterError) {
                 reject('invalid image format');
             } else if (error) {
                 console.log(error);
-                reject('Error uploading image');
+                reject('Error while uploading image');
             } else {
                 console.log(result)
                 resolve(result);
             }
         });
-    }).then((result)=>{
+    }).then((result) => {
         return new Promise((resolve, reject) => {
             db.query(`UPDATE user SET user_picture = ? WHERE user_id = ?`, [result.public_id, userId], (error, results) => {
                 if (error) {
@@ -102,10 +104,58 @@ function uploadAvatar(imageUrl, userId) {
             })
         })
     })
+}
 
+function updatePassword(userId, passwords) {
+    return new Promise((resolve, reject) => {
+        db.query('SELECT * FROM user WHERE user_id = ?', [userId], async (error, results) => {
+            if (! await bcrypt.compare(passwords.oldPassword, results[0].user_password)) {
+                reject('password not match the old one')
+            } else if (!passwords.newPassword == passwords.newPasswordCnf) {
+                reject('password not match')
+            } else {
+                resolve(results)
+            }
+        })
+    }).then((OldResults) => {
+        return new Promise(async (resolve, reject) => {
+            const hash = await bcrypt.hash(passwords.newPassword, 8)
+            db.query('UPDATE user SET user_password = ? WHERE user_id = ?', [hash, userId], (error, results) => {
+                if (error) {
+                    console.log(error)
+                    reject(error)
+                } else {
+                    resolve(OldResults)
+                }
+            })
+        })
+    }).then((OldResults) => {
+        return new Promise((resolve, reject) => {
+            const mailOptions = {
+                from: process.env.GMAIL_USER,
+                to: OldResults[0].user_email,
+                subject: "password update",
+                html: "your password has been changed"
+            };
+
+            // send mail with defined transport object
+
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.log(error);
+                    reject(error);
+                } else {
+                    console.log('Email sent: ' + info.response);
+                    resolve(info);
+                }
+            });
+
+        })
+    })
 
 }
 module.exports = {
     getUserInfo, updateField,
-    uploadAvatar, updateUserInfo
+    uploadAvatar, updateUserInfo,
+    updatePassword
 }
