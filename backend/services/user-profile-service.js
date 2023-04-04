@@ -1,5 +1,7 @@
-const db = require('../db');
+const db = require('../config/db');
 const dotenv = require('dotenv');
+const cloudinary = require('cloudinary').v2;
+const multer = require('multer');
 dotenv.config({ path: './.env' });
 
 function getUserInfo(userId) {
@@ -60,6 +62,50 @@ function updateUserInfo(userId, user) {
                 resolve(results)
             }
         })
-    })  
+    })
 }
-module.exports = { getUserInfo, updateField, updateUserInfo }
+
+function uploadAvatar(imageUrl, userId) {
+    // Configure Cloudinary
+    cloudinary.config({
+        cloud_name: 'dbwf4x5ni',
+        api_key: '161138694634421',
+        api_secret: 'hRPiTBnd_0qeUFVwo9o9AgneU8M',
+    });
+    // The uploaded image is available in req.file
+    return new Promise((resolve, reject) => {
+        cloudinary.uploader.upload(imageUrl, {
+            resource_type: "image",
+            type: "upload",
+            public_id: "avatar_"+userId,
+            overwrite: true
+        }, function (error, result) {
+            if (error instanceof multer.MulterError) {
+                reject('invalid image format');
+            } else if (error) {
+                console.log(error);
+                reject('Error uploading image');
+            } else {
+                console.log(result)
+                resolve(result);
+            }
+        });
+    }).then((result)=>{
+        return new Promise((resolve, reject) => {
+            db.query(`UPDATE user SET user_picture = ? WHERE user_id = ?`, [result.public_id, userId], (error, results) => {
+                if (error) {
+                    console.log("cannot update: ", error)
+                    reject(error)
+                } else {
+                    resolve(results)
+                }
+            })
+        })
+    })
+
+
+}
+module.exports = {
+    getUserInfo, updateField,
+    uploadAvatar, updateUserInfo
+}

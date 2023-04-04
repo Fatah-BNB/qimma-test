@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const db = require('../db');
+const db = require('../config/db');
 const nodemailer = require('nodemailer');
 const dotenv = require('dotenv');
 dotenv.config({ path: './.env' });

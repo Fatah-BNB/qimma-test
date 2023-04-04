@@ -31,6 +31,15 @@ function updateInfoCntrl(req, res){
     })
 }
 
+function uploadAvatarCntrl(req, res){
+    const imageUrl = req.file.path;
+    const userId = req.authData.userId
+    userProfileService.uploadAvatar(imageUrl, userId).then((results)=>{
+        res.status(200).send({ succMsg: results});
+    }).catch((error)=>{
+        res.status(400).send({errMgs:'cannot upload avatar' , error: error});
+    })
+}
 
 module.exports = {getUserInfoCntrl, updateFieldCntrl,
-     updateInfoCntrl}
+     updateInfoCntrl, uploadAvatarCntrl}

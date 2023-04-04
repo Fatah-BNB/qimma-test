@@ -1,5 +1,5 @@
 const express = require("express");
-const db = require("./db");
+const db = require("./config/db");
 const authRouter = require('./routes/user-auth-router');
 const adminRouter = require('./routes/admin-router')
 const profileRouter = require('./routes/user-profile-router')
