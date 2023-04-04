@@ -7,11 +7,17 @@ function verifyToken(userType){
     }
     try{
       const authData = jwt.verify(token, process.env.JWT_SECRET);
-      if (authData.userType !== userType) {
+      const userTypeArry = ['student', 'instructor', 'parent']
+      if(JSON.stringify(userTypeArry) === JSON.stringify(userType)){
+        req.authData = authData;
+        next()
+      }else if ((authData.userType !== userType) && (typeof authData.userType == typeof userType)) {
         return res.status(403).json({ message: 'Forbidden' });
+      }else{
+        req.authData = authData;
+        next()
       }
-      req.authData = authData;
-      next()
+      
     }catch (err) {
       return res.status(401).json({ message: 'Invalid token' });
     }
