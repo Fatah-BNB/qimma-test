@@ -1,5 +1,5 @@
 const adminService = require('../services/admin-service');
-const userService = require('../services/user-service')
+const userService = require('../services/user-auth-service')
 
 
 function loginController (req, res){

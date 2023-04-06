@@ -1,13 +1,13 @@
-const userService = require('../services/user-service');
+const userService = require('../services/user-auth-service');
 const jwt = require('jsonwebtoken');
 
 
 
 function registerController(req, res) {
 
-  if(req.body.hasOwnProperty('tier')){
+  if (req.body.hasOwnProperty('tier')) {
     const student = req.body
-    userService.userRegister(student).then(userService.studentRegister).then(async(results)=>{
+    userService.userRegister(student).then(userService.studentRegister).then(async (results) => {
       const emailToken = userService.createEmailToken(results[0].user_firstName, results[0].user_id);
       var fullUrl = req.protocol + '://' + req.get('host') + '/verify-user-email' + '/' + results[0].user_firstName + '/' + emailToken
       userService.sendEmail(results[0].user_email, fullUrl, 'Email confirmation');
@@ -15,10 +15,10 @@ function registerController(req, res) {
     }).catch((error) => {
       res.status(401).send({ errMsg: error.message });
     });
-  }else if(req.body.hasOwnProperty('field')){
+  } else if (req.body.hasOwnProperty('field')) {
 
     const instructor = req.body
-    userService.userRegister(instructor).then(userService.instuctorRegister).then(async(results)=>{
+    userService.userRegister(instructor).then(userService.instuctorRegister).then(async (results) => {
       const emailToken = userService.createEmailToken(results[0].user_firstName, results[0].user_id);
       var fullUrl = req.protocol + '://' + req.get('host') + '/verify-user-email' + '/' + results[0].user_firstName + '/' + emailToken
       userService.sendEmail(results[0].user_email, fullUrl, 'Email confirmation');
@@ -27,9 +27,9 @@ function registerController(req, res) {
       res.status(401).send({ errMsg: error.message });
     });
 
-  }else{
+  } else {
     const parent = req.body
-    userService.userRegister(parent).then(userService.parentRegister).then(async(results)=>{
+    userService.userRegister(parent).then(userService.parentRegister).then(async (results) => {
       const emailToken = userService.createEmailToken(results[0].user_firstName, results[0].user_id);
       var fullUrl = req.protocol + '://' + req.get('host') + '/verify-user-email' + '/' + results[0].user_firstName + '/' + emailToken
       userService.sendEmail(results[0].user_email, fullUrl, 'Email confirmation');
@@ -107,7 +107,8 @@ function passwordResettingCntrl(req, res) {
     try {
       //1) create token for email 
       const emailToken = userService.createEmailToken(results[0].user_firstName, results[0].user_id);
-      var fullUrl = req.protocol + '://' + req.get('host') + '/verify-user-email' + '/' + results[0].user_firstName + '/' + emailToken
+      var fullUrl = req.protocol + '://' + req.get('host') + '/login/password-resetting/'+ results[0].user_firstName + '/' + emailToken
+
       //2) send the email
       userService.sendEmail(results[0].user_email, fullUrl, 'Password resetting');
       res.status(200).send({ succMsg: "check your email" });
@@ -136,16 +137,32 @@ function changePasswordCntrl(req, res) {
     });
 }
 
-function registerFieldsCntrl(req, res){
-  userService.getFromTable('field').then((results)=>{
-    res.status(200).send({ fields: results});
-  }).catch((error)=>{
-    res.status(400).send({ errMsg: error.message});
+function registerFieldsCntrl(req, res) {
+  userService.getFromTable('field').then((results) => {
+    res.status(200).send({ fields: results });
+  }).catch((error) => {
+    res.status(400).send({ errMsg: error.message });
+  })
+}
+
+function registerTiersCntrl(req, res) {
+  userService.getFromTable('tier').then((results) => {
+    res.status(200).send({ tiers: results });
+  }).catch((error) => {
+    res.status(400).send({ errMsg: error.message });
+  })
+}
+
+function registerWilayasCntrl(req, res) {
+  userService.getFromTable('wilaya').then((results) => {
+    res.status(200).send({ wilayas: results });
+  }).catch((error) => {
+    res.status(400).send({ errMsg: error.message });
   })
 }
 
 module.exports = {
-  registerController, loginController,
+  registerController, loginController, registerTiersCntrl, registerWilayasCntrl,
   logoutController, updateEmailStatusCntrl, resendEmailVerificationCntrl,
   passwordResettingCntrl, changePasswordCntrl, registerFieldsCntrl
 };

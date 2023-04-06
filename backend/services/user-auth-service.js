@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const db = require('../db');
-const nodemailer = require('nodemailer');
+const db = require('../config/db');
 const dotenv = require('dotenv');
+const transporter = require('../config/transporter')
 dotenv.config({ path: './.env' });
 
 function userRegister(user) {
@@ -170,13 +170,6 @@ function createEmailToken(username, userId) {
 
 function sendEmail(userEmail, url, subject) {
   console.log("calling send email")
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_PASSWORD
-    }
-  });
   const mailOptions = {
     from: process.env.GMAIL_USER,
     to: userEmail,
