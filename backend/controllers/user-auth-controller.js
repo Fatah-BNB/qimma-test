@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 
 function registerController(req, res) {
 
-  if (req.body.hasOwnProperty('tier')) {
+  if (req.body.tier !== '') {
     const student = req.body
     userService.userRegister(student).then(userService.studentRegister).then(async (results) => {
       const emailToken = userService.createEmailToken(results[0].user_firstName, results[0].user_id);
@@ -15,8 +15,7 @@ function registerController(req, res) {
     }).catch((error) => {
       res.status(401).send({ errMsg: error.message });
     });
-  } else if (req.body.hasOwnProperty('field')) {
-
+  } else if (req.body.field !== '') {
     const instructor = req.body
     userService.userRegister(instructor).then(userService.instuctorRegister).then(async (results) => {
       const emailToken = userService.createEmailToken(results[0].user_firstName, results[0].user_id);
@@ -26,7 +25,6 @@ function registerController(req, res) {
     }).catch((error) => {
       res.status(401).send({ errMsg: error.message });
     });
-
   } else {
     const parent = req.body
     userService.userRegister(parent).then(userService.parentRegister).then(async (results) => {

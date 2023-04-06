@@ -11,11 +11,11 @@ function verifyToken(userType){
       if(JSON.stringify(userTypeArry) === JSON.stringify(userType)){
         req.authData = authData;
         next()
-      }else if ((authData.userType !== userType) && (typeof authData.userType == typeof userType)) {
-        return res.status(403).json({ message: 'Forbidden' });
-      }else{
+      }else if ((authData.userType == userType) && (typeof authData.userType == typeof userType)) {
         req.authData = authData;
         next()
+      }else{
+        return res.status(403).json({ message: 'Forbidden' });
       }
       
     }catch (err) {
