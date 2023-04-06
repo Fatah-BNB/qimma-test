@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom"
 import * as Yup from "yup"
 import "./login.css"
 import { useDispatch, useSelector } from "react-redux"
-import { checkLoginStatus } from "../slices/user-slice"
+import { checkLoginStatus, fetchUserData } from "../slices/user-slice"
 import NavBar from "./navbar"
 
 export default function LoginForm() {
@@ -24,6 +24,7 @@ export default function LoginForm() {
       setLoginMsg(error.response.data.errMsg)
     })
   }
+  const myState = useSelector(state => state.userReducer.email)
   const login = () => {
     Axios.post("http://localhost:5000/login", {
       email: formik.values.email,
@@ -31,7 +32,10 @@ export default function LoginForm() {
     }, {
       withCredentials: true // allow sending cookies
     }).then(async (response) => {
+      console.log("DATA ---> ", response.data)
       await dispatch(checkLoginStatus())
+      await dispatch(fetchUserData(response.data))
+      console.log("STATE ----> ", myState)
       // console.log("IS LOGGED --> ", isLogged)
       navigate("/home")
     }).catch((error) => {
