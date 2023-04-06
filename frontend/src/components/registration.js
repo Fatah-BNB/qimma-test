@@ -7,9 +7,27 @@ import "./registration.css"
 import NavBar from "./navbar"
 
 export default function RegistrationForm() {
+    const [tiers, setTiers] = useState([])
+    const [fields, setFields] = useState([])
+    const getTiers = () => {
+        Axios.get("http://localhost:5000/register/tiers").then(response => {
+            setTiers(response.data.tiers)
+        }).catch(error => {
+            console.log("ERR fetching tiers --> ", error.response.data.errMsg)
+        })
+    }
+    const getFields = () => {
+        Axios.get("http://localhost:5000/register/fields").then(response => {
+            setFields(response.data.fields)
+        }).catch(error => {
+            console.log("ERR fetching fields --> ", error.response.data.errMsg)
+        })
+    }
     useEffect(() => {
         console.log("Registration mounted")
-    })
+        getTiers()
+        getFields()
+    }, [])
     const [registerMsg, setRegisterMsg] = useState("")
     const navigate = useNavigate()
     const register = () => {
@@ -28,7 +46,7 @@ export default function RegistrationForm() {
             setRegisterMsg(response.data.succMsg)
             navigate("/verify-email", {
                 state: {
-                    emailAdr: response.data.user_email,
+                    emailAdr: response.data.results.user_email,
                 }
             })
         }).catch((error) => {
@@ -105,7 +123,7 @@ export default function RegistrationForm() {
                                 onBlur={formik.handleBlur}
                                 type="radio"
                                 name="userType"
-                                value="teacher" />
+                                value="instructor" />
                             Register as teacher
                         </label>
                     </div>
@@ -205,39 +223,36 @@ export default function RegistrationForm() {
                     {formik.values.userType === "student" && <div class="form-group">
                         <label for="tier">Tier</label>
                         <select
+                            id="tier"
                             name="tier"
+                            value={formik.values.tier}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            value={formik.values.tier}
                         >
-                            {/* <option disabled name="selectTier">-- select your tier --</option> */}
-                            <option value="">-- select your tier --</option>
-                            <option name="secondary1" value="1st year secondary school">1st year secondary school</option>
-                            <option name="secondary2" value="2nd year secondary school">2nd year secondary school</option>
-                            <option name="secondary3" value="3rd year secondary school">3rd year secondary school</option>
-                            <option name="middle1" value="1st year middle school">1st year middle school</option>
-                            <option name="middle2" value="2nd year middle school">2nd year middle school</option>
-                            <option name="middle3" value="3rd year middle school">3rd year middle school</option>
+                            <option value="">Select a tier</option>
+                            {tiers.map(tier => (
+                                <option key={tier.tier_code} value={tier.tier_code}>
+                                    {tier.tier_name}
+                                </option>
+                            ))}
                         </select>
                         {formik.touched.tier && formik.errors.tier ? <p className="error-message">{formik.errors.tier}</p> : null}
                     </div>}
-                    {formik.values.userType === "teacher" && <div class="form-group">
+                    {formik.values.userType === "instructor" && <div class="form-group">
                         <label for="field">Field</label>
                         <select
+                            id="field"
                             name="field"
+                            value={formik.values.field}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            value={formik.values.field}
                         >
-                            <option value="">-- select your field --</option>
-                            <option name="math" value="Mathematics">Mathematics</option>
-                            <option name="science" value="Science">Science</option>
-                            <option name="physics" value="physics">Physics</option>
-                            <option name="eng" value="English">English</option>
-                            <option name="fr" value="French">French</option>
-                            <option name="ar" value="Arabic">Arabic</option>
-                            <option name="islamic" value="Islamic sciences">Islamic sciences</option>
-                            <option name="his&geo" value="History and geography">History and geography</option>
+                            <option value="">Select a field</option>
+                            {fields.map(field => (
+                                <option key={field.field_code} value={field.field_code}>
+                                    {field.field_name}
+                                </option>
+                            ))}
                         </select>
                         {formik.touched.field && formik.errors.field ? <p className="error-message">{formik.errors.field}</p> : null}
                     </div>}
