@@ -5,12 +5,23 @@ import './profile.css'
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import { useSelector, useDispatch } from "react-redux";
+import Axios from "axios"
+import { fetchUserData } from "../slices/user-slice";
 
 export default function Profile() {
     const dispatch = useDispatch()
+    const getUserInfo = () => {
+        Axios.get("http://localhost:5000/profile").then(async response => {
+            await dispatch(fetchUserData(response.data.results))  
+            console.log("response ==> ", response.data.results)
+        }).then(error => {
+            console.log("ERROR --> ", error)
+        })
+    }
     useEffect(() => {
         console.log("Profile mounted")
-        console.log("PROFILE STATE ---> ", formik.values.email)
+        getUserInfo()
+        console.log("fetched")
     })
 
     const handleCancelEdit = () => {

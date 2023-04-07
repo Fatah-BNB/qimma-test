@@ -17,11 +17,11 @@ const userSlice = createSlice({
             userCookie ? state.isLogged = true : state.isLogged = false;
         },
         fetchUserData: (state, action) => {
-            //fetch and assign user fields
             state.firstname = action.payload.user_firstName
             state.lastname = action.payload.user_lastName
             state.email = action.payload.user_email
             state.phoneNumber = action.payload.user_phoneNumber
+            state.wilaya = action.payload.wilaya_name
         }
     },
 });

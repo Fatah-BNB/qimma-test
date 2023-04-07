@@ -16,6 +16,7 @@ function getUserInfo(userId) {
                 console.log("cannot get user info", error)
                 reject(error)
             } else {
+                console.log("can get user info", results)
                 resolve(results)
             }
         })
