@@ -9,7 +9,7 @@ const userSlice = createSlice({
         lastname: 'me',
         email: 'me@me',
         phoneNumber: '012365478',
-        wilaya: 'batna',
+        wilaya: 'wilaya',
     },
     reducers: {
         checkLoginStatus: (state) => {

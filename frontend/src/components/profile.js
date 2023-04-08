@@ -10,9 +10,28 @@ import { fetchUserData } from "../slices/user-slice";
 
 export default function Profile() {
     const dispatch = useDispatch()
+    const [updateSatus, setUpdateStatus] = useState("")
+    const [wilayas, setwilayas] = useState([])
+
+    const getWialayas = () => {
+        Axios.get("http://localhost:5000/register/wilayas").then(response => {
+            setwilayas(response.data.wilayas)
+        }).catch(error => {
+            console.log("ERR fetching tiers --> ", error.response.data.errMsg)
+        })
+    }
+
+    const updateInfo = () => {
+        Axios.put("http://localhost:5000/profile/edit-user-info", { user: formik.values }).then(response => {
+            setUpdateStatus(response.data.succMsg)
+        }).catch(error => {
+            setUpdateStatus(error.response.data.errMsg)
+        })
+    }
+
     const getUserInfo = () => {
         Axios.get("http://localhost:5000/profile").then(async response => {
-            await dispatch(fetchUserData(response.data.results))  
+            await dispatch(fetchUserData(response.data.results))
             console.log("response ==> ", response.data.results)
         }).then(error => {
             console.log("ERROR --> ", error)
@@ -23,6 +42,10 @@ export default function Profile() {
         getUserInfo()
         console.log("fetched")
     })
+
+    useEffect(() => {
+        getWialayas()
+    }, [])
 
     const handleCancelEdit = () => {
         formik.setValues(formik.initialValues)
@@ -45,6 +68,9 @@ export default function Profile() {
             console.log(values)
             //send to backend
             setEditing(false)
+            updateInfo()
+            getUserInfo()
+            console.log("FORMIK VALUES --> ", formik.values)
         }
     })
     const [editing, setEditing] = useState(false);
@@ -86,14 +112,21 @@ export default function Profile() {
                         />
                         {formik.touched.phoneNumber && formik.errors.phoneNumber ? <p className="error-message">{formik.errors.phoneNumber}</p> : null}
                         <label for="wilaya">Wilaya</label>
-                        <input
+                        <select
+                            id="wilaya"
                             name="wilaya"
-                            type="text"
+                            value={formik.values.wilaya}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            value={formik.values.wilaya}
-                        />
-                        {formik.touched.wilaya && formik.errors.wilaya ? <p className="error-message">{formik.errors.wilaya}</p> : null}
+                        >
+                            <option value="">Select wilaya</option>
+                            {wilayas.map(wilaya => (
+                                <option key={wilaya.wilaya_code} value={wilaya.wilaya_code}>
+                                    {wilaya.wilaya_name}
+                                </option>
+                            ))}
+                        </select>
+                        {formik.touched.tier && formik.errors.tier ? <p className="error-message">{formik.errors.tier}</p> : null}
 
 
 
@@ -109,6 +142,7 @@ export default function Profile() {
                         <button type="button" onClick={() => { setEditing(true) }}>Edit</button>
                     </div>
                 )}
+                <p>{updateSatus}</p>
             </div>
 
         </div >

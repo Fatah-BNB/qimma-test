@@ -23,9 +23,11 @@ function updatePasswordCntrl(req, res) {
 
 function updateInfoCntrl(req, res) {
     const userId = req.authData.userId
-    const user = req.body
-    userProfileService.updateUserInfo(userId, user).then(() => {
-        res.status(200).send({ succMsg: "update user info" });
+    const user = req.body.user
+    console.log("user is --> ", user)
+    console.log("user id is --> ", userId)
+    userProfileService.updateProfileInfo(userId, user).then(() => {
+        res.status(200).send({ succMsg: "user info updated" });
     }).catch((error) => {
         res.status(400).send({ errMsg: "cannot update user info" })
     })

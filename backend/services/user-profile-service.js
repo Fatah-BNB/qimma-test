@@ -68,6 +68,26 @@ function updateUserInfo(userId, user) {
     })
 }
 
+function updateProfileInfo(userId, user) {
+    return new Promise((resolve, reject) => {
+        const updateQuery = "update user set "+
+        "user_firstName = ?, "+
+        "user_lastName = ?, "+
+        "user_phoneNumber = ? "+
+        // "user_wilaya = ?"+
+        "where user_id = ?;"
+        const updateValues = [user.firstname, user.lastname, user.phoneNumber, userId]
+        db.query(updateQuery, updateValues, (err, res) => {
+            if (err) {
+                console.log("err is ", err)
+                reject(err)
+            }else {
+                resolve(res)
+            }
+        })
+    })
+}
+
 function uploadAvatar(imageUrl, userId) {
     // Configure Cloudinary
     cloudinary.config({
@@ -158,5 +178,5 @@ function updatePassword(userId, passwords) {
 module.exports = {
     getUserInfo, updateField,
     uploadAvatar, updateUserInfo,
-    updatePassword
+    updatePassword, updateProfileInfo
 }
