@@ -9,7 +9,7 @@ dotenv.config({ path: './.env' });
 function getUserInfo(userId) {
     return new Promise((resolve, reject) => {
         const query = 'SELECT user_email, user_password, user_firstName, '
-            + 'user_lastName, user_birthDate, user_phoneNumber, user_picture, user_card_id, wilaya_name '
+            + 'user_lastName, user_birthDate, user_phoneNumber, user_picture, user_card_id, user.wilaya_code, wilaya_name '
             + 'FROM user INNER JOIN wilaya ON user.wilaya_code = wilaya.wilaya_code where user.user_id = ?'
         db.query(query, [userId], (error, results) => {
             if (error) {
@@ -73,10 +73,10 @@ function updateProfileInfo(userId, user) {
         const updateQuery = "update user set "+
         "user_firstName = ?, "+
         "user_lastName = ?, "+
-        "user_phoneNumber = ? "+
-        // "user_wilaya = ?"+
+        "user_phoneNumber = ?, "+
+        "wilaya_code = ? "+
         "where user_id = ?;"
-        const updateValues = [user.firstname, user.lastname, user.phoneNumber, userId]
+        const updateValues = [user.firstname, user.lastname, user.phoneNumber, user.wilayaCode, userId]
         db.query(updateQuery, updateValues, (err, res) => {
             if (err) {
                 console.log("err is ", err)
