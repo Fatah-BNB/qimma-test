@@ -9,6 +9,7 @@ import Axios from "axios"
 import { fetchUserData } from "../slices/user-slice";
 
 export default function Profile() {
+    const [readyToSave, setReadyToSave] = useState(false)
     const dispatch = useDispatch()
     const [updateSatus, setUpdateStatus] = useState("")
     const [wilayas, setwilayas] = useState([])
@@ -41,6 +42,11 @@ export default function Profile() {
         console.log("Profile mounted")
         getUserInfo()
         console.log("fetched")
+        setReadyToSave(formik.values === formik.initialValues || Object.keys(formik.errors).length > 0)
+        console.log(formik.errors)
+        console.log(readyToSave)
+        console.log(Object.keys(formik.errors).length)
+        console.log("FORMIK VALUES = ", formik.values)
     })
 
     useEffect(() => {
@@ -58,7 +64,8 @@ export default function Profile() {
             lastname: useSelector(state => state.userReducer.lastname),
             email: useSelector(state => state.userReducer.email),
             phoneNumber: useSelector(state => state.userReducer.phoneNumber),
-            wilaya: 'batna',
+            wilaya: useSelector(state => state.userReducer.wilaya),
+            wilayaCode: useSelector(state => state.userReducer.wilayaCode)
         }, validationSchema: Yup.object({
             firstname: Yup.string().required("cannot leave this field empty"),
             lastname: Yup.string().required("cannot leave this field empty"),
@@ -113,9 +120,9 @@ export default function Profile() {
                         {formik.touched.phoneNumber && formik.errors.phoneNumber ? <p className="error-message">{formik.errors.phoneNumber}</p> : null}
                         <label for="wilaya">Wilaya</label>
                         <select
-                            id="wilaya"
-                            name="wilaya"
-                            value={formik.values.wilaya}
+                            id="wilayaCode"
+                            name="wilayaCode"
+                            value={formik.values.wilayaCode}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                         >
@@ -130,7 +137,7 @@ export default function Profile() {
 
 
 
-                        <button type="submit">Save</button>
+                        {!readyToSave && <button type="submit">Save</button>}
                         <button type="button" onClick={handleCancelEdit}>Cancel</button>
                     </form>
                 ) : (
