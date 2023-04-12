@@ -9,7 +9,7 @@ function registerController(req, res) {
     const student = req.body
     userService.userRegister(student).then(userService.studentRegister).then(async (results) => {
       const emailToken = userService.createEmailToken(results[0].user_firstName, results[0].user_id);
-      var fullUrl = req.protocol + '://' + req.get('host') + '/verify-user-email' + '/' + results[0].user_firstName + '/' + emailToken
+      var fullUrl = req.protocol + '://' + "localhost:3000" + '/verify-user-email' + '/' + results[0].user_firstName + '/' + emailToken
       userService.sendEmail(results[0].user_email, fullUrl, 'Email confirmation');
       res.status(200).send({ succMsg: "Account created", results: results[0] });
     }).catch((error) => {
@@ -19,7 +19,7 @@ function registerController(req, res) {
     const instructor = req.body
     userService.userRegister(instructor).then(userService.instuctorRegister).then(async (results) => {
       const emailToken = userService.createEmailToken(results[0].user_firstName, results[0].user_id);
-      var fullUrl = req.protocol + '://' + req.get('host') + '/verify-user-email' + '/' + results[0].user_firstName + '/' + emailToken
+      var fullUrl = req.protocol + '://' + "localhost:3000" + '/verify-user-email' + '/' + results[0].user_firstName + '/' + emailToken
       userService.sendEmail(results[0].user_email, fullUrl, 'Email confirmation');
       res.status(200).send({ succMsg: "Account created", results: results[0] });
     }).catch((error) => {
@@ -29,7 +29,7 @@ function registerController(req, res) {
     const parent = req.body
     userService.userRegister(parent).then(userService.parentRegister).then(async (results) => {
       const emailToken = userService.createEmailToken(results[0].user_firstName, results[0].user_id);
-      var fullUrl = req.protocol + '://' + req.get('host') + '/verify-user-email' + '/' + results[0].user_firstName + '/' + emailToken
+      var fullUrl = req.protocol + '://' + "localhost:3000" + '/verify-user-email' + '/' + results[0].user_firstName + '/' + emailToken
       userService.sendEmail(results[0].user_email, fullUrl, 'Email confirmation');
       res.status(200).send({ succMsg: "Account created", results: results[0] });
     }).catch((error) => {

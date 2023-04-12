@@ -8,6 +8,7 @@ import Password_reset from './components/password_reset';
 import Comfirm_email from './components/comfirmed';
 import Logout from './components/logout';
 import Profile from "./components/profile";
+import Email_comfirmed from "./components/comfirmed-email";
 import AdminDashboard from "./components/admin/admin-dashboard";
 import ErrorPage from "./errPage";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -40,7 +41,7 @@ function App() {
           <Route path="/profile" element={<ProtectedRoute isLogged={isLogged} child={<Profile/>} redirect="/login"/>} />
           <Route path="/verify-email" element={<Comfirm_email/>} />
           <Route path="/password-reset" element={<Password_reset />} />
-          
+          <Route path="/verify-user-email/*" element={<Email_comfirmed/>} />
           <Route path="/login-admin" element={<ProtectedRoute isLogged={!adminIsLogged} child={<AdminLoginForm />} redirect="/admin-dashboard"/>} />\
           <Route path="/admin-dashboard" element={<ProtectedRoute isLogged={adminIsLogged} child={<AdminDashboard />} redirect="/login-admin"/>} />\
 
