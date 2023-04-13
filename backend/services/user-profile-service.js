@@ -8,18 +8,46 @@ dotenv.config({ path: './.env' });
 
 function getUserInfo(userId) {
     return new Promise((resolve, reject) => {
-        const query = 'SELECT user_email, user_password, user_firstName, '
-            + 'user_lastName, user_birthDate, user_phoneNumber, user_picture, user_card_id, wilaya_name '
-            + 'FROM user INNER JOIN wilaya ON user.wilaya_code = wilaya.wilaya_code where user.user_id = ?'
-        db.query(query, [userId], (error, results) => {
-            if (error) {
-                console.log("cannot get user info", error)
-                reject(error)
+        db.query("select * from user where user_id = ?", [userId], (err, res) => {
+            if (err) {
+                reject(err)
             } else {
-                resolve(results)
+                resolve(res)
             }
         })
+    }).then(res => {
+        if (res[0].wilaya_code == null) {
+            return new Promise((resolve, reject) => {
+                const query = 'SELECT user_email, user_password, user_firstName, '
+                    + 'user_lastName, user_birthDate, user_phoneNumber, user_picture, user_card_id from user where user_id = ?'
+                db.query(query, [res[0].user_id], (error, results) => {
+                    if (error) {
+                        console.log("cannot get user info", error)
+                        reject(error)
+                    } else {
+                        console.log("can get user info", results)
+                        resolve(results)
+                    }
+                })
+            })
+        } else {
+            return new Promise((resolve, reject) => {
+                const query = 'SELECT user_email, user_password, user_firstName, '
+                    + 'user_lastName, user_birthDate, user_phoneNumber, user_picture, user_card_id, user.wilaya_code, wilaya_name '
+                    + 'FROM user INNER JOIN wilaya ON user.wilaya_code = wilaya.wilaya_code where user.user_id = ?'
+                db.query(query, [res[0].user_id], (error, results) => {
+                    if (error) {
+                        console.log("cannot get user info", error)
+                        reject(error)
+                    } else {
+                        console.log("can get user info", results)
+                        resolve(results)
+                    }
+                })
+            })
+        }
     })
+
 }
 
 function updateField(userId, field, value) {
@@ -62,6 +90,26 @@ function updateUserInfo(userId, user) {
                 reject(error)
             } else {
                 resolve(results)
+            }
+        })
+    })
+}
+
+function updateProfileInfo(userId, user) {
+    return new Promise((resolve, reject) => {
+        const updateQuery = "update user set " +
+            "user_firstName = ?, " +
+            "user_lastName = ?, " +
+            "user_phoneNumber = ?, " +
+            "wilaya_code = ? " +
+            "where user_id = ?;"
+        const updateValues = [user.firstname, user.lastname, user.phoneNumber, user.wilayaCode, userId]
+        db.query(updateQuery, updateValues, (err, res) => {
+            if (err) {
+                console.log("err is ", err)
+                reject(err)
+            } else {
+                resolve(res)
             }
         })
     })
@@ -157,5 +205,5 @@ function updatePassword(userId, passwords) {
 module.exports = {
     getUserInfo, updateField,
     uploadAvatar, updateUserInfo,
-    updatePassword
+    updatePassword, updateProfileInfo
 }

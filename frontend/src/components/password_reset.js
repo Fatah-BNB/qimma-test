@@ -26,48 +26,56 @@ export default function ResetForm() {
   const navigate = useNavigate()
   const formik = useFormik({
     initialValues: {
-      email: "",
-      password: ""
+      password: "",
+      passwordc: ""
     },
     validationSchema: Yup.object({
-      email: Yup.string().email("this email address is not valid").required("required"),
-      password: Yup.string().min(8, "password must be 8 characters long").required("required"),
-    }),
-    onSubmit: (values, { resetForm }) => {
+      password: Yup.string().min(8, "password must be 8 characters long").matches(/^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/,
+          'Password must contain at least one uppercase character, one symbol, and one number').required("required"),
+      passwordc: Yup.string().oneOf([Yup.ref("password"), null], "passwords must match").required("required"),
+  }),
+    onSubmit: (values) => {
       console.log(values)
-      //consume the login api
-
-      resetForm()
+      const url = window.location.href;
+      const params = url.split("/").slice(-2);
+      console.log(params.join("/"));
+      Axios.post("http://localhost:5000/login/password-resetting/"+params.join("/"), {  
+      password: formik.values.password,
+      }).then(response => {
+          navigate("/login")
+      }).catch(error => {
+          document.getElementById("message").innerHTML = error.response.data.errMsg;
+      })
     }
   })
   return (
     <div>
       <div className="login-form-container">
         <h2>Password reset</h2>
-        <p>{loginMsg}</p>
+        <p id="message">{loginMsg}</p>
         <form onSubmit={formik.handleSubmit}>
-          <div class="form-group">
-            <label for="email">New password</label>
+        <div class="form-group">
+            <label for="password">Password</label>
             <input
-              name="email"
-              type="text"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.email}
-            />
-            {formik.touched.email && formik.errors.email ? <p className="error-message">{formik.errors.email}</p> : null}
-          </div>
-          <div class="form-group">
-            <label for="password">Comfirm password</label>
-            <input
-              name="cpassword"
-              type="password"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.password}
+                name="password"
+                type="password"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.password}
             />
             {formik.touched.password && formik.errors.password ? <p className="error-message">{formik.errors.password}</p> : null}
-          </div>
+        </div>
+        <div class="form-group">
+            <label for="passwordc">Confirm password</label>
+            <input
+                name="passwordc"
+                type="password"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.passwordc}
+            />
+            {formik.touched.passwordc && formik.errors.passwordc ? <p className="error-message">{formik.errors.passwordc}</p> : null}
+        </div>
           <button type="submit">Reset</button>
         </form>
       </div>

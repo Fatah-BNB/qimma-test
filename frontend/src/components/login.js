@@ -24,6 +24,7 @@ export default function LoginForm() {
       setLoginMsg(error.response.data.errMsg)
     })
   }
+  const myState = useSelector(state => state.userReducer.email)
   const login = () => {
     Axios.post("http://localhost:5000/login", {
       email: formik.values.email,
@@ -31,7 +32,9 @@ export default function LoginForm() {
     }, {
       withCredentials: true // allow sending cookies
     }).then(async (response) => {
+      console.log("DATA ---> ", response.data)
       await dispatch(checkLoginStatus())
+      console.log("STATE ----> ", myState)
       // console.log("IS LOGGED --> ", isLogged)
       navigate("/home")
     }).catch((error) => {
@@ -55,12 +58,22 @@ export default function LoginForm() {
       formik.setFieldValue("password", "")
     }
   })
+
+const forgotPassword = ( ) => { 
+    Axios.post("http://localhost:5000/login/password-resetting", {
+      email: formik.values.email,
+    }).then(response => {
+        document.getElementById("login-mssg").innerHTML = response.response.data.succMsg;
+    }).catch(error => {
+        document.getElementById("login-mssg").innerHTML = error.response.data.errMsg;
+    })
+  }
   return (
     <div>
     <NavBar/>
       <div className="login-form-container">
         <h2>Login</h2>
-        <p>{loginMsg}</p>
+        <p id="login-mssg">{loginMsg}</p>
         <form onSubmit={formik.handleSubmit}>
           <div class="form-group">
             <label for="email">Email address</label>
@@ -85,7 +98,7 @@ export default function LoginForm() {
             {formik.touched.password && formik.errors.password ? <p className="error-message">{formik.errors.password}</p> : null}
           </div>
           {loginMsg === "confirm you email to log in" && <p className="option" onClick={resendEmail}>Resend verification email</p>}
-          <p className="option">Forgot password</p>
+          <p className="option" onClick={()=>{forgotPassword()}} >Forgot password</p>
           <button type="submit">Login</button>
           <p>Don't have an account yet? <span onClick={()=>{navigate("/register")}} className="option" style={{fontWeight: "bold"}}>Create account</span></p>
         </form>

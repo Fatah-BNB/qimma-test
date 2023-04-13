@@ -24,11 +24,11 @@ function userRegister(user) {
       db.query('SELECT * FROM user WHERE user_id = ?', [results.insertId], (error, results) => {
         if (error) {
           reject(error)
-        } else if (user.hasOwnProperty('tier')) {
+        } else if (user.tier !== '') {
           results[0].tier = user.tier
           console.log('saved student: ', results)
           resolve(results)
-        } else if (user.hasOwnProperty('field')) {
+        } else if (user.field !== '') {
           results[0].field = user.field
           console.log('saved instructor: ', results)
           resolve(results)
@@ -54,47 +54,24 @@ function parentRegister(OldResults) {
 }
 
 function studentRegister(OldResults) {
-  return new Promise((resolve, reject) => {
-    db.query('SELECT * FROM tier WHERE tier_name = ?', [OldResults[0].tier], (error, results) => {
+  return new Promise((resolve, reject) => {//set userType
+    const queryVar = { user_id: OldResults[0].user_id, tier_code: OldResults[0].tier};
+    db.query("INSERT INTO student SET ?", queryVar, (error, results) => {
       if (error) {
         console.log(error)
+        console.log("stduent 3 ", OldResults)
         reject(error)
-      } else {// save field code in oldResults
-        OldResults[0].tierId = results[0].tier_code;
-        console.log("stduent 2", OldResults)
-        resolve(OldResults);
+      } else {
+        console.log("stduent 3 ", OldResults)
+        resolve(OldResults)
       }
-    })
-  }).then((OldResults) => {
-    return new Promise((resolve, reject) => {//set userType
-      const queryVar = { user_id: OldResults[0].user_id, tier_code: OldResults[0].tierId };
-      db.query("INSERT INTO student SET ?", queryVar, (error, results) => {
-        if (error) {
-          console.log(error)
-          console.log("stduent 3 ", OldResults)
-          reject(error)
-        } else {
-          console.log("stduent 3 ", OldResults)
-          resolve(OldResults)
-        }
-      });
-    })
+    });
   })
 }
 
 function instuctorRegister(OldResults) {
-  return new Promise((resolve, reject) => {
-    db.query('SELECT * FROM field WHERE field_name = ?', [OldResults[0].field], (error, results) => {
-      if (error) {
-        reject(error)
-      } else {// save field code in oldResults
-        OldResults[0].fieldId = results[0].field_code;
-        resolve(OldResults);
-      }
-    })
-  }).then((OldResults) => {
     return new Promise((resolve, reject) => {
-      const queryVar = { user_id: OldResults[0].user_id, field_code: OldResults[0].fieldId };
+      const queryVar = { user_id: OldResults[0].user_id, field_code: OldResults[0].field };
       db.query("INSERT INTO instructor SET ?", queryVar, (error, results) => {
         if (error) {
           reject(error)
@@ -104,7 +81,6 @@ function instuctorRegister(OldResults) {
 
       });
     })
-  })
 }
 
 function login(user) {
