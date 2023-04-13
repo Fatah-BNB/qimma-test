@@ -40,7 +40,7 @@ function App() {
           <Route path="/logout" element={<Logout/>} />
           <Route path="/profile" element={<ProtectedRoute isLogged={isLogged} child={<Profile/>} redirect="/login"/>} />
           <Route path="/verify-email" element={<Comfirm_email/>} />
-          <Route path="/password-reset" element={<Password_reset />} />
+          <Route path="/password-reset/*" element={<Password_reset />} />
           <Route path="/verify-user-email/*" element={<Email_comfirmed/>} />
           <Route path="/login-admin" element={<ProtectedRoute isLogged={!adminIsLogged} child={<AdminLoginForm />} redirect="/admin-dashboard"/>} />\
           <Route path="/admin-dashboard" element={<ProtectedRoute isLogged={adminIsLogged} child={<AdminDashboard />} redirect="/login-admin"/>} />\

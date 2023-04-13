@@ -28,6 +28,9 @@ export default function LoginForm() {
   const login = () => {
     Axios.post("http://localhost:5000/login", {
       email: formik.values.email,
+      password: formik.values.password,
+    }, {
+      withCredentials: true // allow sending cookies
     }).then(async (response) => {
       console.log("DATA ---> ", response.data)
       await dispatch(checkLoginStatus())
