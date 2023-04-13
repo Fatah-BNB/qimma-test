@@ -1,5 +1,5 @@
 const adminService = require('../services/admin-service');
-const userService = require('../services/user-service')
+const userService = require('../services/user-auth-service')
 
 
 function loginController (req, res){
@@ -34,4 +34,15 @@ function getAllUsersController (req, res){
       res.status(400).send({ ok: false, error: error.message });
     });
 }
-  module.exports = {loginController, logoutController, getAllUsersController};
+
+//Admin features
+function countUsersController (req,res){
+  admin = req.body;
+  adminService.countUsers(admin).then((result) => {
+    res.status(200).send({nbrUsers:result});
+  })
+  .catch((error) =>{
+    res.status(400).send({error:error.message});
+  })
+}
+  module.exports = {loginController, logoutController, getAllUsersController, countUsersController};

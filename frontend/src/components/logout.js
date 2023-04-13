@@ -21,6 +21,7 @@ export default function Logout() {
         })
             .then(response => {
                 if (response.status === 200) {
+                    localStorage.clear()
                     console.log(response.data.succMsg)
                     setCookieMsg(response.data.succMsg)
                     // dispatch(checkLoginStatus())
