@@ -8,5 +8,6 @@ const router = express.Router();
 router.post('/login', adminController.loginController);
 router.post('/logout', adminController.logoutController);
 router.get('/users', checkToken.verifyToken, adminController.getAllUsersController);
+router.get('/admin-count', adminController.countUsersController);
 
 module.exports = router;
