@@ -105,7 +105,7 @@ function passwordResettingCntrl(req, res) {
     try {
       //1) create token for email 
       const emailToken = userService.createEmailToken(results[0].user_firstName, results[0].user_id);
-      var fullUrl = req.protocol + '://' + req.get('host') + '/login/password-resetting/'+ results[0].user_firstName + '/' + emailToken
+      var fullUrl = req.protocol + '://' + "localhost:3000" + '/password-reset/'+ results[0].user_firstName + '/' + emailToken
 
       //2) send the email
       userService.sendEmail(results[0].user_email, fullUrl, 'Password resetting');
