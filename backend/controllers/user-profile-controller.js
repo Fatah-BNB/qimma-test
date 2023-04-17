@@ -39,7 +39,7 @@ function uploadAvatarCntrl(req, res) {
     userProfileService.uploadAvatar(imageUrl, userId).then((results) => {
         res.status(200).send({ succMsg: results });
     }).catch((error) => {
-        res.status(400).send({ errMgs: 'cannot upload avatar', error: error });
+        res.status(400).send({ errMg: 'cannot upload avatar', err: error });
     })
 }
 

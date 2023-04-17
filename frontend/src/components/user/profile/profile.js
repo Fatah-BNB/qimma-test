@@ -13,6 +13,18 @@ export default function Profile() {
     const dispatch = useDispatch()
     const [updateSatus, setUpdateStatus] = useState("")
     const [wilayas, setwilayas] = useState([])
+    const [profilePic, setProfilePic] = useState(null)
+
+    const uploadProfilePic = async (event) => {
+        setProfilePic(event.target.files[0])
+        const formData = new FormData();
+        formData.append('avatar', profilePic);
+        await Axios.post("http://localhost:5000/profile/edit-user-info/avatar", formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(response => {
+            console.log("UPLOADED =====> ", response.data.succMsg)
+        }).catch(error => {
+            console.log("UPLOAD PICTURE ERROR =====> ", error.response.data)
+        })
+    }
 
     const getWialayas = () => {
         Axios.get("http://localhost:5000/register/wilayas").then(response => {
@@ -86,6 +98,7 @@ export default function Profile() {
             <NavBar />
             <div className="profile-page-container">
                 {/* <img className="profile-picture" src="https://placekitten.com/200/200" alt="Profile picture" /> */}
+                <input type="file" name="avatar" accept=".jpg,.jpeg,.png" onChange={uploadProfilePic} />
                 {editing ? (
                     <form className="profile-form" onSubmit={formik.handleSubmit}>
                         <h3>Personal information</h3>
