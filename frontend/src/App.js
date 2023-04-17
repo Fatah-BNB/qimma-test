@@ -1,15 +1,15 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-import LoginForm from './components/login';
-import AdminLoginForm from "./components/login-admin";
-import RegistrationForm from './components/registration';
-import Home from './components/home';
-import Landing from './components/Landing';
-import Password_reset from './components/password_reset';
-import Comfirm_email from './components/comfirmed';
-import Logout from './components/logout';
-import Profile from "./components/profile";
-import Email_comfirmed from "./components/comfirmed-email";
-import AdminDashboard from "./components/admin/admin-dashboard";
+import LoginForm from './components/user/login/login';
+import AdminLoginForm from "./components/admin/login/login-admin";
+import RegistrationForm from './components/user/registration/registration';
+import Home from './components/user/home/home';
+import Landing from './components/user/landing-page/Landing';
+import Password_reset from './components/user/password-reset/password_reset';
+import Comfirm_email from './components/user/email-confirmation/comfirmed';
+import Logout from './components/user/logout/logout';
+import Profile from "./components/user/profile/profile";
+import Email_comfirmed from "./components/user/email-confirmation/comfirmed-email";
+import AdminDashboard from "./components/admin/dashboard/admin-dashboard";
 import ErrorPage from "./errPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useSelector, useDispatch } from "react-redux";
