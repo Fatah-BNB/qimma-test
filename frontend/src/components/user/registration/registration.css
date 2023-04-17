@@ -1,0 +1,56 @@
+.registration-form-container {
+  background-color: white;
+  padding: 75px;
+  }
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 50px;
+    transition: 0.3s ease;
+  }
+  h2:hover {
+    color: #0062cc;
+    transition: 0.3s ease;
+    cursor: default;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .form-group input {
+    padding: 10px;
+    font-size: 16px;
+    color: #333;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    outline: none;
+    background: transparent;
+  }
+  
+  button[type="submit"] {
+    display: block;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button[type="submit"]:hover {
+    background-color: #0062cc;
+  }
+
+  .error-message {
+    color: red;
+    font-size: 10px;
+  }

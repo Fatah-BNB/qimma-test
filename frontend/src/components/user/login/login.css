@@ -1,0 +1,76 @@
+.login-form-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 75px;
+    border-radius: 30px;
+    /* border: 0.5px solid; */
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    transition: 0.3s ease;
+  }
+
+  .login-form-container:hover{
+    transition: 0.3s ease;
+    box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  }
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 50px;
+    transition: 0.3s ease;
+  }
+  h2:hover {
+    color: #0062cc;
+    transition: 0.3s ease;
+    cursor: default;
+  }
+
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .form-group input {
+    padding: 10px;
+    font-size: 16px;
+    color: #333;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    outline: none;
+    background: transparent;
+  }
+  
+  button {
+    display: block;
+    margin: 18px auto ;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0062cc;
+  }
+
+  .error-message {
+    color: red;
+    font-size: 10px;
+  }
+
+  .option:hover {
+    color: #007bff;
+    cursor: pointer;
+  }
