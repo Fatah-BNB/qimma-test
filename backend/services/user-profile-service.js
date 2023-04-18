@@ -115,6 +115,19 @@ function updateProfileInfo(userId, user) {
     })
 }
 
+function getAvatar(userId) {
+    return new Promise((resolve, reject) => {
+        db.query("select user_picture from user where user_id = ?",[userId], (err, res) => {
+            if(err){
+                console.log("cannot get avatar for user ", userId + "erros is ", err)
+                reject(err)
+            }else{
+                resolve(res)
+            }
+        })
+    })
+}
+
 function uploadAvatar(imageUrl, userId) {
     // Configure Cloudinary
     cloudinary.config({
@@ -136,13 +149,13 @@ function uploadAvatar(imageUrl, userId) {
                 console.log(error);
                 reject('Error while uploading image');
             } else {
-                console.log(result)
+                console.log("IMAGE RESULTS ++++++++++>>>",result)
                 resolve(result);
             }
         });
     }).then((result) => {
         return new Promise((resolve, reject) => {
-            db.query(`UPDATE user SET user_picture = ? WHERE user_id = ?`, [result.public_id, userId], (error, results) => {
+            db.query(`UPDATE user SET user_picture = ? WHERE user_id = ?`, [result.secure_url, userId], (error, results) => {
                 if (error) {
                     console.log("cannot update: ", error)
                     reject(error)
@@ -205,5 +218,5 @@ function updatePassword(userId, passwords) {
 module.exports = {
     getUserInfo, updateField,
     uploadAvatar, updateUserInfo,
-    updatePassword, updateProfileInfo
+    updatePassword, updateProfileInfo, getAvatar
 }

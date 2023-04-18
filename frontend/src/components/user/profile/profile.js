@@ -7,6 +7,7 @@ import * as Yup from "yup"
 import { useSelector, useDispatch } from "react-redux";
 import Axios from "axios"
 import { fetchUserData } from "../../../slices/user-slice";
+import defaultAvatar from "../../../icons/default_avatar.png"
 
 export default function Profile() {
     const [readyToSave, setReadyToSave] = useState(false)
@@ -14,6 +15,16 @@ export default function Profile() {
     const [updateSatus, setUpdateStatus] = useState("")
     const [wilayas, setwilayas] = useState([])
     const [profilePic, setProfilePic] = useState(null)
+    const [image, setImage] = useState(defaultAvatar)
+
+    const getAvatar = () => {
+        Axios.get("http://localhost:5000/profile/edit-user-info/getAvatar").then(response => {
+            setImage(response.data.picture)
+            console.log("DISPLAYING USER PROFILE PICTURE", response.data.picture)
+        }).catch(error => {
+            console.log("ERROR DISPLAYING USER AVATAR", error.response.data.errMsg)
+        })
+    }
 
     const uploadProfilePic = async (event) => {
         setProfilePic(event.target.files[0])
@@ -21,6 +32,7 @@ export default function Profile() {
         formData.append('avatar', profilePic);
         await Axios.post("http://localhost:5000/profile/edit-user-info/avatar", formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(response => {
             console.log("UPLOADED =====> ", response.data.succMsg)
+            getAvatar()
         }).catch(error => {
             console.log("UPLOAD PICTURE ERROR =====> ", error.response.data)
         })
@@ -62,6 +74,7 @@ export default function Profile() {
     })
 
     useEffect(() => {
+        getAvatar()
         getWialayas()
     }, [])
 
@@ -98,6 +111,7 @@ export default function Profile() {
             <NavBar />
             <div className="profile-page-container">
                 {/* <img className="profile-picture" src="https://placekitten.com/200/200" alt="Profile picture" /> */}
+                <img className="profile-pic" src={image} alt="profile picture" />
                 <input type="file" name="avatar" accept=".jpg,.jpeg,.png" onChange={uploadProfilePic} />
                 {editing ? (
                     <form className="profile-form" onSubmit={formik.handleSubmit}>

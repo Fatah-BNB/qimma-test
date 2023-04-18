@@ -43,7 +43,16 @@ function uploadAvatarCntrl(req, res) {
     })
 }
 
+function getAvatarCntrl(req, res) {
+    const userId = req.authData.userId
+    userProfileService.getAvatar(userId).then(results => {
+        res.status(200).send({picture: results[0].user_picture})
+    }).catch(error => {
+        res.status(400).send({errMsg: "cannot retrieve profile picture", err: error})
+    })
+}
+
 module.exports = {
     getUserInfoCntrl,
-    updateInfoCntrl, uploadAvatarCntrl, updatePasswordCntrl
+    updateInfoCntrl, uploadAvatarCntrl, updatePasswordCntrl, getAvatarCntrl
 }
