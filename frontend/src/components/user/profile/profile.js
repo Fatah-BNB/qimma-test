@@ -8,20 +8,20 @@ import { useSelector, useDispatch } from "react-redux";
 import Axios from "axios"
 import { fetchUserData } from "../../../slices/user-slice";
 import defaultAvatar from "../../../icons/default_avatar.png"
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function Profile() {
     const [readyToSave, setReadyToSave] = useState(false)
     const dispatch = useDispatch()
-    const [updateSatus, setUpdateStatus] = useState("")
     const [wilayas, setwilayas] = useState([])
     const [image, setImage] = useState(defaultAvatar)
     const imageInput = useRef(null)
 
     const getAvatar = () => {
         Axios.get("http://localhost:5000/profile/edit-user-info/getAvatar").then(response => {
-            if(response.data.picture){
+            if (response.data.picture) {
                 setImage(response.data.picture)
-            }else{
+            } else {
                 setImage(defaultAvatar)
             }
             console.log("DISPLAYING USER PROFILE PICTURE", response.data.picture)
@@ -30,7 +30,7 @@ export default function Profile() {
         })
     }
 
-    const deleteProfilePic = async() => {
+    const deleteProfilePic = async () => {
         await Axios.put("http://localhost:5000/profile/edit-user-info/deleteAvatar").then(response => {
             console.log(response.data.succMsg)
             getAvatar()
@@ -42,11 +42,16 @@ export default function Profile() {
     const uploadProfilePic = (event) => {
         const formData = new FormData();
         formData.append('avatar', event.target.files[0]);
+        toast.loading('uploading...');
         Axios.post("http://localhost:5000/profile/edit-user-info/avatar", formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(response => {
-            console.log("UPLOADED =====> ", response.data.succMsg)
+            console.log("UPLOADED =====> ", response.data.results)
+            toast.dismiss();
             getAvatar()
+            toast.success(response.data.succMsg)
         }).catch(error => {
+            toast.dismiss()
             console.log("UPLOAD PICTURE ERROR =====> ", error.response.data)
+            toast.error("cannot update profile picture")
         })
     }
 
@@ -60,9 +65,9 @@ export default function Profile() {
 
     const updateInfo = () => {
         Axios.put("http://localhost:5000/profile/edit-user-info", { user: formik.values }).then(response => {
-            setUpdateStatus(response.data.succMsg)
+            toast.success(response.data.succMsg)
         }).catch(error => {
-            setUpdateStatus(error.response.data.errMsg)
+            toast.error(error.response.data.errMsg)
         })
     }
 
@@ -127,6 +132,7 @@ export default function Profile() {
     return (
         <div>
             <NavBar />
+            <Toaster />
             <div className="profile-page-container">
                 <div className="profile-pic-container">
                     <img className="profile-pic" src={image} alt="profile picture" />
@@ -197,7 +203,6 @@ export default function Profile() {
                         <button type="button" onClick={() => { setEditing(true) }}>Edit</button>
                     </div>
                 )}
-                <p>{updateSatus}</p>
             </div>
 
         </div >

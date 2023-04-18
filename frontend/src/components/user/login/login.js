@@ -7,6 +7,7 @@ import "./login.css"
 import { useDispatch, useSelector } from "react-redux"
 import { checkLoginStatus } from "../../../slices/user-slice"
 import NavBar from "../../user/navbar/navbar"
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function LoginForm() {
   useEffect(() => {
@@ -14,14 +15,14 @@ export default function LoginForm() {
   })
   const dispatch = useDispatch()
   // const isLogged = useSelector(state => state.userReducer.isLogged)
-  const [loginMsg, setLoginMsg] = useState("")
+  const [notConfirmed, setNotConfirmed] = useState(false)
   const resendEmail = () => {
     Axios.post("http://localhost:5000/login/resend-email-verification", {
       email: formik.values.email
     }).then(response => {
-      setLoginMsg(response.data.succMsg)
+      toast.success(response.data.succMsg)
     }).catch(error => {
-      setLoginMsg(error.response.data.errMsg)
+      toast.error(error.response.data.errMsg)
     })
   }
   const myState = useSelector(state => state.userReducer.email)
@@ -38,7 +39,8 @@ export default function LoginForm() {
       // console.log("IS LOGGED --> ", isLogged)
       navigate("/home")
     }).catch((error) => {
-      setLoginMsg(error.response.data.errMsg)
+      toast.error(error.response.data.errMsg)
+      setNotConfirmed(true)
     })
   }
   const navigate = useNavigate()
@@ -59,21 +61,21 @@ export default function LoginForm() {
     }
   })
 
-const forgotPassword = ( ) => { 
+  const forgotPassword = () => {
     Axios.post("http://localhost:5000/login/password-resetting", {
       email: formik.values.email,
     }).then(response => {
-        document.getElementById("login-mssg").innerHTML = response.response.data.succMsg;
+      document.getElementById("login-mssg").innerHTML = response.response.data.succMsg;
     }).catch(error => {
-        document.getElementById("login-mssg").innerHTML = error.response.data.errMsg;
+      document.getElementById("login-mssg").innerHTML = error.response.data.errMsg;
     })
   }
   return (
     <div>
-    <NavBar/>
+      <NavBar />
+      <Toaster />
       <div className="login-form-container">
         <h2>Login</h2>
-        <p id="login-mssg">{loginMsg}</p>
         <form onSubmit={formik.handleSubmit}>
           <div class="form-group">
             <label for="email">Email address</label>
@@ -97,10 +99,10 @@ const forgotPassword = ( ) => {
             />
             {formik.touched.password && formik.errors.password ? <p className="error-message">{formik.errors.password}</p> : null}
           </div>
-          {loginMsg === "confirm you email to log in" && <p className="option" onClick={resendEmail}>Resend verification email</p>}
-          <p className="option" onClick={()=>{forgotPassword()}} >Forgot password</p>
+          {notConfirmed && <p className="option" onClick={resendEmail}>Resend verification email</p>}
+          <p className="option" onClick={() => { forgotPassword() }} >Forgot password</p>
           <button type="submit">Login</button>
-          <p>Don't have an account yet? <span onClick={()=>{navigate("/register")}} className="option" style={{fontWeight: "bold"}}>Create account</span></p>
+          <p>Don't have an account yet? <span onClick={() => { navigate("/register") }} className="option" style={{ fontWeight: "bold" }}>Create account</span></p>
         </form>
       </div>
     </div>

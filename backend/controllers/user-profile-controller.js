@@ -37,9 +37,9 @@ function uploadAvatarCntrl(req, res) {
     const imageUrl = req.file.path;
     const userId = req.authData.userId
     userProfileService.uploadAvatar(imageUrl, userId).then((results) => {
-        res.status(200).send({ succMsg: results });
+        res.status(200).send({ results: results, succMsg: "profile picture updated" });
     }).catch((error) => {
-        res.status(400).send({ errMg: 'cannot upload avatar', err: error });
+        res.status(400).send({ errMg: "cannot update profile picture", err: error });
     })
 }
 

@@ -6,22 +6,22 @@ import * as Yup from "yup"
 import './login-admin.css'
 import { useDispatch } from "react-redux"
 import { checkAdminLoginStatus } from '../../../slices/admin-slice'
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function AdminLoginForm() {
   useEffect(() => {
     console.log("Admin login mounted")
-})
+  })
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const [loginErrStatus, setLoginErrStatus] = useState("");
   const login = () => {
     Axios.post("http://localhost:5000/admin/login", {
       email: formik.values.email,
       password: formik.values.password,
     }, { withCredentials: true }).then(async (response) => {
-      await   dispatch(checkAdminLoginStatus())
-      navigate("/admin-dashboard", {state:{username:response.data.admin_username }})
-    }).catch(error => { setLoginErrStatus(error.response.data.errMsg) })
+      await dispatch(checkAdminLoginStatus())
+      navigate("/admin-dashboard", { state: { username: response.data.admin_username } })
+    }).catch(error => { toast.error(error.response.data.errMsg) })
   }
   const formik = useFormik({
     initialValues: {
@@ -42,8 +42,8 @@ export default function AdminLoginForm() {
   })
   return (
     <div className="login-form-container">
+      <Toaster />
       <h2>Login</h2>
-      <p>{loginErrStatus}</p>
       <form onSubmit={formik.handleSubmit}>
         <div class="form-group">
           <label for="email">Email address</label>
