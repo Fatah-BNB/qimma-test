@@ -52,7 +52,16 @@ function getAvatarCntrl(req, res) {
     })
 }
 
+function deleteAvatar(req, res) {
+    const userId = req.authData.userId
+    userProfileService.deleteAvatar(userId).then(results => {
+        res.status(200).send({succMsg: "profile picture deleted"})
+    }).catch(error => {
+        res.status(400).send({errMsg: "cannot delete profile picture", err: error})
+    })
+}
+
 module.exports = {
     getUserInfoCntrl,
-    updateInfoCntrl, uploadAvatarCntrl, updatePasswordCntrl, getAvatarCntrl
+    updateInfoCntrl, uploadAvatarCntrl, updatePasswordCntrl, getAvatarCntrl, deleteAvatar
 }

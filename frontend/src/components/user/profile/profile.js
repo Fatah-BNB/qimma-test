@@ -1,5 +1,5 @@
 import React from "react"
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import NavBar from "../../user/navbar/navbar"
 import './profile.css'
 import { useFormik } from "formik"
@@ -14,23 +14,35 @@ export default function Profile() {
     const dispatch = useDispatch()
     const [updateSatus, setUpdateStatus] = useState("")
     const [wilayas, setwilayas] = useState([])
-    const [profilePic, setProfilePic] = useState(null)
     const [image, setImage] = useState(defaultAvatar)
+    const imageInput = useRef(null)
 
     const getAvatar = () => {
         Axios.get("http://localhost:5000/profile/edit-user-info/getAvatar").then(response => {
-            setImage(response.data.picture)
+            if(response.data.picture){
+                setImage(response.data.picture)
+            }else{
+                setImage(defaultAvatar)
+            }
             console.log("DISPLAYING USER PROFILE PICTURE", response.data.picture)
         }).catch(error => {
             console.log("ERROR DISPLAYING USER AVATAR", error.response.data.errMsg)
         })
     }
 
-    const uploadProfilePic = async (event) => {
-        setProfilePic(event.target.files[0])
+    const deleteProfilePic = async() => {
+        await Axios.put("http://localhost:5000/profile/edit-user-info/deleteAvatar").then(response => {
+            console.log(response.data.succMsg)
+            getAvatar()
+        }).catch(error => {
+            console.log(error.response.data.errMsg)
+        })
+    }
+
+    const uploadProfilePic = (event) => {
         const formData = new FormData();
-        formData.append('avatar', profilePic);
-        await Axios.post("http://localhost:5000/profile/edit-user-info/avatar", formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(response => {
+        formData.append('avatar', event.target.files[0]);
+        Axios.post("http://localhost:5000/profile/edit-user-info/avatar", formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(response => {
             console.log("UPLOADED =====> ", response.data.succMsg)
             getAvatar()
         }).catch(error => {
@@ -62,6 +74,12 @@ export default function Profile() {
             console.log("ERROR --> ", error)
         })
     }
+
+
+    const changeProfilePic = () => {
+        imageInput.current.click()
+    }
+
     useEffect(() => {
         console.log("Profile mounted")
         getUserInfo()
@@ -110,9 +128,12 @@ export default function Profile() {
         <div>
             <NavBar />
             <div className="profile-page-container">
-                {/* <img className="profile-picture" src="https://placekitten.com/200/200" alt="Profile picture" /> */}
-                <img className="profile-pic" src={image} alt="profile picture" />
-                <input type="file" name="avatar" accept=".jpg,.jpeg,.png" onChange={uploadProfilePic} />
+                <div className="profile-pic-container">
+                    <img className="profile-pic" src={image} alt="profile picture" />
+                    <input style={{ display: 'none' }} ref={imageInput} type="file" name="avatar" accept=".jpg,.jpeg,.png" onChange={uploadProfilePic} />
+                    <button onClick={changeProfilePic} >Change picture</button>
+                    <button onClick={deleteProfilePic}>delete picture</button>
+                </div>
                 {editing ? (
                     <form className="profile-form" onSubmit={formik.handleSubmit}>
                         <h3>Personal information</h3>

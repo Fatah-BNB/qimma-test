@@ -128,6 +128,19 @@ function getAvatar(userId) {
     })
 }
 
+function deleteAvatar(userId) {
+    return new Promise((resolve, reject) => {
+        db.query("update user set user_picture = null where user_id = ?", [userId], (err, res) => {
+            if(err) {
+                console.log("unable to delete picture from user ", userId + "error is ", err)
+                reject(err)
+            }else{
+                resolve(res)
+            }
+        })
+    })
+}
+
 function uploadAvatar(imageUrl, userId) {
     // Configure Cloudinary
     cloudinary.config({
@@ -218,5 +231,5 @@ function updatePassword(userId, passwords) {
 module.exports = {
     getUserInfo, updateField,
     uploadAvatar, updateUserInfo,
-    updatePassword, updateProfileInfo, getAvatar
+    updatePassword, updateProfileInfo, getAvatar, deleteAvatar
 }
