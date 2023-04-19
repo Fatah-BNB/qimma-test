@@ -22,7 +22,7 @@ export default function Logout() {
                 if (response.status === 200) {
                     localStorage.clear()
                     console.log(response.data.succMsg)
-                    // dispatch(checkLoginStatus())
+                    dispatch(checkLoginStatus())
                     console.log("after cookie cleared: ", isLogged)
                 }
             })

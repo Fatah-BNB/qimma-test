@@ -8,11 +8,13 @@ import "./changePassword.css"
 export default function ChangePassword() {
     const [edited, setEdited] = useState(false)
     const changePassword = () => {
+        toast.loading("updating password ..")
         Axios.put("http://localhost:5000/profile/edit-user-info/security/password", {
             oldPassword: formik.values.oldPassword,
             newPassword: formik.values.newPassword,
             newPasswordc: formik.values.newPasswordc,
         }).then(response => {
+            toast.dismiss()
             toast.success(response.data.succMsg)
             setEdited(false)
             toast("an email was sent to you")
