@@ -9,6 +9,7 @@ import Axios from "axios"
 import { fetchUserData } from "../../../slices/user-slice";
 import defaultAvatar from "../../../icons/default_avatar.png"
 import toast, { Toaster } from 'react-hot-toast';
+import ChangePassword from "./changePassword";
 
 export default function Profile() {
     const [readyToSave, setReadyToSave] = useState(false)
@@ -16,6 +17,8 @@ export default function Profile() {
     const [wilayas, setwilayas] = useState([])
     const [image, setImage] = useState(defaultAvatar)
     const imageInput = useRef(null)
+    const [changePassword, setChangePassword] = useState(false)
+    const [buttonText, setButtonText] = useState("Change password")
 
     const getAvatar = () => {
         Axios.get("http://localhost:5000/profile/edit-user-info/getAvatar").then(response => {
@@ -83,6 +86,16 @@ export default function Profile() {
 
     const changeProfilePic = () => {
         imageInput.current.click()
+    }
+
+    const toogleChangePasswordForm = () => {
+        if (changePassword) {
+            setChangePassword(false)
+            setButtonText("Change password")
+        } else {
+            setChangePassword(true)
+            setButtonText("Cancel")
+        }
     }
 
     useEffect(() => {
@@ -201,10 +214,11 @@ export default function Profile() {
                         {formik.values.phoneNumber && <p>{formik.values.phoneNumber}</p>}
                         {formik.values.wilaya && <p>{formik.values.wilaya}</p>}
                         <button type="button" onClick={() => { setEditing(true) }}>Edit</button>
+                        {changePassword && <ChangePassword />}
+                        <button type="button" onClick={toogleChangePasswordForm}>{buttonText}</button>
                     </div>
                 )}
             </div>
-
         </div >
     )
 }

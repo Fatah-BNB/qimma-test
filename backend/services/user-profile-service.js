@@ -184,9 +184,9 @@ function updatePassword(userId, passwords) {
     return new Promise((resolve, reject) => {
         db.query('SELECT * FROM user WHERE user_id = ?', [userId], async (error, results) => {
             if (! await bcrypt.compare(passwords.oldPassword, results[0].user_password)) {
-                reject('password not match the old one')
-            } else if (!passwords.newPassword == passwords.newPasswordCnf) {
-                reject('password not match')
+                reject('incorrect password')
+            } else if (!passwords.newPassword == passwords.newPasswordc) {
+                reject('passwords do not match')
             } else {
                 resolve(results)
             }
@@ -208,8 +208,8 @@ function updatePassword(userId, passwords) {
             const mailOptions = {
                 from: process.env.GMAIL_USER,
                 to: OldResults[0].user_email,
-                subject: "password update",
-                html: "your password has been changed"
+                subject: "password changed",
+                html: "your password has been updated successfully"
             };
 
             // send mail with defined transport object

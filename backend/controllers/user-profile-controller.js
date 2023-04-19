@@ -12,10 +12,12 @@ function getUserInfoCntrl(req, res) {
 
 
 function updatePasswordCntrl(req, res) {
+    console.log("called")
     const userId = req.authData.userId
     const passwords = req.body
+    console.log(passwords)
     userProfileService.updatePassword(userId, passwords).then((results) => {
-        res.status(200).send({ succMsg: "update password ", results: results[0] });
+        res.status(200).send({ succMsg: "password updated ", results: results[0] });
     }).catch((error) => {
         res.status(400).send({ errMsg: error })
     })
