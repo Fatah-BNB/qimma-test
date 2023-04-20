@@ -1,5 +1,5 @@
 import React from "react"
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import NavBar from "../../user/navbar/navbar"
 import './profile.css'
 import { useFormik } from "formik"
@@ -7,12 +7,56 @@ import * as Yup from "yup"
 import { useSelector, useDispatch } from "react-redux";
 import Axios from "axios"
 import { fetchUserData } from "../../../slices/user-slice";
+import defaultAvatar from "../../../icons/default_avatar.png"
+import toast, { Toaster } from 'react-hot-toast';
+import ChangePassword from "./changePassword";
 
 export default function Profile() {
     const [readyToSave, setReadyToSave] = useState(false)
     const dispatch = useDispatch()
-    const [updateSatus, setUpdateStatus] = useState("")
     const [wilayas, setwilayas] = useState([])
+    const [image, setImage] = useState(defaultAvatar)
+    const imageInput = useRef(null)
+    const [changePassword, setChangePassword] = useState(false)
+    const [buttonText, setButtonText] = useState("Change password")
+
+    const getAvatar = () => {
+        Axios.get("http://localhost:5000/profile/edit-user-info/getAvatar").then(response => {
+            if (response.data.picture) {
+                setImage(response.data.picture)
+            } else {
+                setImage(defaultAvatar)
+            }
+            console.log("DISPLAYING USER PROFILE PICTURE", response.data.picture)
+        }).catch(error => {
+            console.log("ERROR DISPLAYING USER AVATAR", error.response.data.errMsg)
+        })
+    }
+
+    const deleteProfilePic = async () => {
+        await Axios.put("http://localhost:5000/profile/edit-user-info/deleteAvatar").then(response => {
+            console.log(response.data.succMsg)
+            getAvatar()
+        }).catch(error => {
+            console.log(error.response.data.errMsg)
+        })
+    }
+
+    const uploadProfilePic = (event) => {
+        const formData = new FormData();
+        formData.append('avatar', event.target.files[0]);
+        toast.loading('uploading...');
+        Axios.post("http://localhost:5000/profile/edit-user-info/avatar", formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(response => {
+            console.log("UPLOADED =====> ", response.data.results)
+            toast.dismiss();
+            getAvatar()
+            toast.success(response.data.succMsg)
+        }).catch(error => {
+            toast.dismiss()
+            console.log("UPLOAD PICTURE ERROR =====> ", error.response.data)
+            toast.error("cannot update profile picture")
+        })
+    }
 
     const getWialayas = () => {
         Axios.get("http://localhost:5000/register/wilayas").then(response => {
@@ -24,9 +68,9 @@ export default function Profile() {
 
     const updateInfo = () => {
         Axios.put("http://localhost:5000/profile/edit-user-info", { user: formik.values }).then(response => {
-            setUpdateStatus(response.data.succMsg)
+            toast.success(response.data.succMsg)
         }).catch(error => {
-            setUpdateStatus(error.response.data.errMsg)
+            toast.error(error.response.data.errMsg)
         })
     }
 
@@ -38,6 +82,22 @@ export default function Profile() {
             console.log("ERROR --> ", error)
         })
     }
+
+
+    const changeProfilePic = () => {
+        imageInput.current.click()
+    }
+
+    const toogleChangePasswordForm = () => {
+        if (changePassword) {
+            setChangePassword(false)
+            setButtonText("Change password")
+        } else {
+            setChangePassword(true)
+            setButtonText("Cancel")
+        }
+    }
+
     useEffect(() => {
         console.log("Profile mounted")
         getUserInfo()
@@ -50,6 +110,7 @@ export default function Profile() {
     })
 
     useEffect(() => {
+        getAvatar()
         getWialayas()
     }, [])
 
@@ -84,8 +145,14 @@ export default function Profile() {
     return (
         <div>
             <NavBar />
+            <Toaster />
             <div className="profile-page-container">
-                {/* <img className="profile-picture" src="https://placekitten.com/200/200" alt="Profile picture" /> */}
+                <div className="profile-pic-container">
+                    <img className="profile-pic" src={image} alt="profile picture" />
+                    <input style={{ display: 'none' }} ref={imageInput} type="file" name="avatar" accept=".jpg,.jpeg,.png" onChange={uploadProfilePic} />
+                    <button onClick={changeProfilePic} >Change picture</button>
+                    <button onClick={deleteProfilePic}>delete picture</button>
+                </div>
                 {editing ? (
                     <form className="profile-form" onSubmit={formik.handleSubmit}>
                         <h3>Personal information</h3>
@@ -147,11 +214,11 @@ export default function Profile() {
                         {formik.values.phoneNumber && <p>{formik.values.phoneNumber}</p>}
                         {formik.values.wilaya && <p>{formik.values.wilaya}</p>}
                         <button type="button" onClick={() => { setEditing(true) }}>Edit</button>
+                        {changePassword && <ChangePassword />}
+                        <button type="button" onClick={toogleChangePasswordForm}>{buttonText}</button>
                     </div>
                 )}
-                <p>{updateSatus}</p>
             </div>
-
         </div >
     )
 }

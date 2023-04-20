@@ -5,6 +5,7 @@ import Axios from "axios"
 import * as Yup from "yup"
 import "./registration.css"
 import NavBar from "../../user/navbar/navbar"
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function RegistrationForm() {
     const [tiers, setTiers] = useState([])
@@ -43,14 +44,14 @@ export default function RegistrationForm() {
             tier: formik.values.tier,
             field: formik.values.field,
         }).then((response) => {
-            setRegisterMsg(response.data.succMsg)
+            toast.success(response.data.succMsg)
             navigate("/verify-email", {
                 state: {
                     emailAdr: response.data.results.user_email,
                 }
             })
         }).catch((error) => {
-            setRegisterMsg(error.response.data.errMsg)
+            toast.error(error.response.data.errMsg)
         })
     }
     const formik = useFormik({
@@ -90,9 +91,9 @@ export default function RegistrationForm() {
     return (
         <div>
             <NavBar />
+            <Toaster />
             <div className="registration-form-container">
                 <h2>Register new account</h2>
-                <p>{registerMsg}</p>
                 <form onSubmit={formik.handleSubmit}>
                     <div>
                         <label>

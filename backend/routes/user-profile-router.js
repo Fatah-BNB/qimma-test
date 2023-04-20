@@ -12,6 +12,8 @@ router.get('/', checkToken.verifyToken(['student', 'instructor', 'parent']), use
 //update multiple fields
 router.put('/edit-user-info', checkToken.verifyToken(['student', 'instructor', 'parent']), userProfileController.updateInfoCntrl)
 router.post('/edit-user-info/avatar', checkToken.verifyToken(['student', 'instructor', 'parent']), configStorage.single('avatar'), userProfileController.uploadAvatarCntrl)
+router.get('/edit-user-info/getAvatar', checkToken.verifyToken(['student', 'instructor', 'parent']), userProfileController.getAvatarCntrl)
+router.put('/edit-user-info/deleteAvatar', checkToken.verifyToken(['student', 'instructor', 'parent']), userProfileController.deleteAvatar)
 router.put('/edit-user-info/security/password', checkToken.verifyToken(['student', 'instructor', 'parent']), userProfileController.updatePasswordCntrl)
 
 

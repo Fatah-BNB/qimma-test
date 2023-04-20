@@ -14,7 +14,6 @@ export default function Logout() {
         console.log("on Mount logout: ", isLogged)
     })
     const isLogged = useSelector(state => state.userReducer.isLogged)
-    const [coockieMsg, setCookieMsg] = useState("")
     const logout = () => {
         Axios.post('http://localhost:5000/logout', null, {
             withCredentials: true
@@ -23,8 +22,7 @@ export default function Logout() {
                 if (response.status === 200) {
                     localStorage.clear()
                     console.log(response.data.succMsg)
-                    setCookieMsg(response.data.succMsg)
-                    // dispatch(checkLoginStatus())
+                    dispatch(checkLoginStatus())
                     console.log("after cookie cleared: ", isLogged)
                 }
             })
@@ -33,7 +31,6 @@ export default function Logout() {
     return (
         <div className="container">
         <NavBar/>
-            <p>{coockieMsg}</p>
             <h1>Thank you <br />You are logged out.</h1>
         </div>
     )

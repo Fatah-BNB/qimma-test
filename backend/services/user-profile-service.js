@@ -115,6 +115,32 @@ function updateProfileInfo(userId, user) {
     })
 }
 
+function getAvatar(userId) {
+    return new Promise((resolve, reject) => {
+        db.query("select user_picture from user where user_id = ?",[userId], (err, res) => {
+            if(err){
+                console.log("cannot get avatar for user ", userId + "erros is ", err)
+                reject(err)
+            }else{
+                resolve(res)
+            }
+        })
+    })
+}
+
+function deleteAvatar(userId) {
+    return new Promise((resolve, reject) => {
+        db.query("update user set user_picture = null where user_id = ?", [userId], (err, res) => {
+            if(err) {
+                console.log("unable to delete picture from user ", userId + "error is ", err)
+                reject(err)
+            }else{
+                resolve(res)
+            }
+        })
+    })
+}
+
 function uploadAvatar(imageUrl, userId) {
     // Configure Cloudinary
     cloudinary.config({
@@ -136,13 +162,13 @@ function uploadAvatar(imageUrl, userId) {
                 console.log(error);
                 reject('Error while uploading image');
             } else {
-                console.log(result)
+                console.log("IMAGE RESULTS ++++++++++>>>",result)
                 resolve(result);
             }
         });
     }).then((result) => {
         return new Promise((resolve, reject) => {
-            db.query(`UPDATE user SET user_picture = ? WHERE user_id = ?`, [result.public_id, userId], (error, results) => {
+            db.query(`UPDATE user SET user_picture = ? WHERE user_id = ?`, [result.secure_url, userId], (error, results) => {
                 if (error) {
                     console.log("cannot update: ", error)
                     reject(error)
@@ -158,9 +184,9 @@ function updatePassword(userId, passwords) {
     return new Promise((resolve, reject) => {
         db.query('SELECT * FROM user WHERE user_id = ?', [userId], async (error, results) => {
             if (! await bcrypt.compare(passwords.oldPassword, results[0].user_password)) {
-                reject('password not match the old one')
-            } else if (!passwords.newPassword == passwords.newPasswordCnf) {
-                reject('password not match')
+                reject('incorrect password')
+            } else if (!passwords.newPassword == passwords.newPasswordc) {
+                reject('passwords do not match')
             } else {
                 resolve(results)
             }
@@ -182,8 +208,8 @@ function updatePassword(userId, passwords) {
             const mailOptions = {
                 from: process.env.GMAIL_USER,
                 to: OldResults[0].user_email,
-                subject: "password update",
-                html: "your password has been changed"
+                subject: "password changed",
+                html: "your password has been updated successfully"
             };
 
             // send mail with defined transport object
@@ -205,5 +231,5 @@ function updatePassword(userId, passwords) {
 module.exports = {
     getUserInfo, updateField,
     uploadAvatar, updateUserInfo,
-    updatePassword, updateProfileInfo
+    updatePassword, updateProfileInfo, getAvatar, deleteAvatar
 }
