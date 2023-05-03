@@ -1,6 +1,6 @@
 const courseCreationService = require('../services/course-creation-service')
 
-function createCourse(req, res){
+function createCourseCntrl(req, res){
     instructorId = req.authData.userTypeIds
     course = req.body
     courseCreationService.createCourse(course, instructorId).then((results)=>{
@@ -10,4 +10,15 @@ function createCourse(req, res){
     })
 }
 
-module.exports = {createCourse}
+function uploadCoursePictureCntrl(req, res){
+    const pictureUrl = req.file.path;
+    courseId = req.params.courseId
+    courseCreationService.uploadCoursePicture(courseId, pictureUrl).then((results)=>{
+        res.status(200).send({ succMsg: "picture upladed ", results: results.insertId });
+    }).catch((error)=>{
+        res.status(500).send({errMsg: 'cannot upload picture'})
+    })
+
+}
+
+module.exports = {createCourseCntrl, uploadCoursePictureCntrl}
