@@ -14,7 +14,7 @@ function uploadCoursePictureCntrl(req, res){
     const pictureUrl = req.file.path;
     courseId = req.params.courseId
     courseCreationService.uploadCoursePicture(courseId, pictureUrl).then((results)=>{
-        res.status(200).send({ succMsg: "picture upladed ", results: results.insertId });
+        res.status(200).send({ succMsg: "picture upladed "});
     }).catch((error)=>{
         res.status(500).send({errMsg: 'cannot upload picture'})
     })
