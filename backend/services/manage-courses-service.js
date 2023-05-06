@@ -14,15 +14,26 @@ function retrieveInstructorCourses(instructor_id) {
     })
 }
 
-function publishCourse(course_title, course_instructor_id) {
+function publishCourse(course_id, course_instructor_id) {
     return new Promise((resolve, reject) => {
-        db.query("update course set published = 1 where course_title = ? and instructor_id = ?", [course_title, course_instructor_id], (err, res) => {
+        db.query("update course set published = 1 where course_id = ? and instructor_id = ?", [course_id, course_instructor_id], (err, res) => {
             if (err) {
                 console.log("ERROR PUBLISHING COURSE: ", err)
                 reject(err)
             } else {
                 resolve(res)
             }
+        })
+    }).then(results => {
+        return new Promise((resolve, reject) => {
+            db.query("select * from course where course_id = ?", [course_id], (err, res) => {
+                if (err) {
+                    console.log(err)
+                    reject(err)
+                }else{
+                    resolve(res)
+                }
+            })
         })
     })
 }

@@ -16,7 +16,7 @@ const CourseCard = ({ title, description, image, price, published, publishCourse
                 <p className="course-description">{description}</p>
                 <div className='course-status'>
                     <p className="course-price">{price} DA</p>
-                    {coursePublished === 0 && <button onClick={publishCourse} className="publish-course-button">Publish</button>}
+                    {coursePublished === 0 ? <button onClick={publishCourse} className="publish-course-button">Publish</button> : null}
                     <button className="edit-course-button">Edit</button>
                 </div>
             </div>

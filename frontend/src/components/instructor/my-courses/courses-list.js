@@ -5,6 +5,7 @@ import CourseCard from './course-card'
 import "./courses-list.css"
 import { useNavigate } from 'react-router-dom'
 import BannerPlaceholder from "../../../icons/course_banner_placeholder.png"
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function CoursesList() {
     const [courses, setCourses] = useState([])
@@ -16,11 +17,13 @@ export default function CoursesList() {
             console.log("ERROR RETREIVING COURSES: ", error)
         })
     }
-    const publishCourse = (courseTitle) => {
-        Axios.put("http://localhost:5000/manage-courses/publish-course", {courseTitle}).then(response => {
+    const publishCourse = (courseId) => {
+        Axios.put("http://localhost:5000/manage-courses/publish-course", { courseId }).then(response => {
             console.log(response.data.succMsg)
+            toast.success(response.data.succMsg)
         }).catch(error => {
             console.log(error.response.data.errMsg)
+            toast.error(error.response.data.errMsg)
         })
     }
 
@@ -33,6 +36,7 @@ export default function CoursesList() {
     return (
         <div>
             <SideBar />
+            <Toaster />
             <div className='course-grid'>
                 {courses.length > 1 ?
                     courses.map((course) => (
@@ -42,7 +46,7 @@ export default function CoursesList() {
                             image={course.course_picture ? course.course_picture : BannerPlaceholder}
                             price={course.course_price}
                             published={course.published}
-                            publishCourse={() => {publishCourse(course.course_title)}}
+                            publishCourse={() => { publishCourse(course.course_id) }}
                         />
                     )) : <h1>My courses</h1>
                 }

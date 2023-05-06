@@ -11,13 +11,13 @@ function retrieveInstructorCoursesCntrl(req, res) {
 
 function publishCourseCntrl(req, res) {
     const instructorId = req.authData.userTypeIds
-    const courseTitle = req.body.courseTitle
-    manageCourses.publishCourse(courseTitle, instructorId).then((results) => {
+    const courseId = req.body.courseId
+    manageCourses.publishCourse(courseId, instructorId).then((results) => {
         console.log("RESULTS ===? ", results)
-        res.status(200).send({ succMsg: "course published" });
+        res.status(200).send({ succMsg: "course published", results: results });
     }).catch((error) => {
         console.log("EROORS ===? ", error)
-        res.status(400).send({ errMsg: 'cannot publish course ' + instructorId + " " + courseTitle })
+        res.status(400).send({ errMsg: 'cannot publish course ' })
     })
 }
 module.exports = { retrieveInstructorCoursesCntrl, publishCourseCntrl }

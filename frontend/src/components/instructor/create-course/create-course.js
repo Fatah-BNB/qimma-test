@@ -5,8 +5,10 @@ import { useFormik } from 'formik'
 import * as Yup from "yup"
 import SideBar from '../side-bar/side-bar'
 import toast, { Toaster } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom'
 
 export default function CreateCourse() {
+    const navigate = useNavigate()
     const [tiers, setTiers] = useState([])
     const createCourse = (course) => {
         Axios.post("http://localhost:5000/course/create-course", {
@@ -17,7 +19,7 @@ export default function CreateCourse() {
             field: course.field,
         }).then(response => {
             console.log(response.data.succMsg)
-            toast.success(response.data.succMsg)
+            navigate("/instructor-my-courses", {state:{succMsg: response.data.succMsg}})
         }).catch(error => {
             console.log(error.response.data.errMsg)
             toast.error(error.response.data.errMsg)
