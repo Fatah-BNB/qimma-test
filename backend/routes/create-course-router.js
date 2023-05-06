@@ -6,6 +6,5 @@ const express = require('express');
 const router = express.Router();
 
 
-router.post('/create-course',checkToken.verifyToken('instructor'), courseController.createCourseCntrl);
-router.post('/create-course/:courseId/upload-picture', checkToken.verifyToken('instructor'), configCoursePictureStorage.single('picture'), courseController.uploadCoursePictureCntrl)
+router.post('/create-course',checkToken.verifyToken('instructor'), configCoursePictureStorage.single('picture'), courseController.createCourseCntrl);
 module.exports = router;

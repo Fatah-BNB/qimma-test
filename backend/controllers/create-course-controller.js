@@ -3,8 +3,9 @@ const courseCreationService = require('../services/course-creation-service')
 function createCourseCntrl(req, res){
     instructorId = req.authData.userTypeIds
     course = req.body
+    const pictureUrl = req.file.path;
     console.log("COURSE VARIABLES = ", course)
-    courseCreationService.createCourse(course, instructorId).then((results)=>{
+    courseCreationService.createCourse(course,  pictureUrl, instructorId).then((results)=>{
         res.status(200).send({ succMsg: "Course created", results: results.insertId });
     }).catch((error)=>{
         res.status(500).send({errMsg: 'cannot create course'})
