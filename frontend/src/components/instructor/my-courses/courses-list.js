@@ -4,6 +4,7 @@ import SideBar from '../side-bar/side-bar'
 import CourseCard from './course-card'
 import "./courses-list.css"
 import { useNavigate } from 'react-router-dom'
+import BannerPlaceholder from "../../../icons/course_banner_placeholder.png"
 
 export default function CoursesList() {
     const [courses, setCourses] = useState([])
@@ -38,14 +39,14 @@ export default function CoursesList() {
                         <CourseCard
                             title={course.course_title}
                             description={course.course_description}
-                            image={course.course_picture}
+                            image={course.course_picture ? course.course_picture : BannerPlaceholder}
                             price={course.course_price}
                             published={course.published}
                             publishCourse={() => {publishCourse(course.course_title)}}
                         />
                     )) : <h1>My courses</h1>
                 }
-                <button onClick={() => { navigate("/instructor/create-course/course-details") }} className="floating-button">+</button>
+                <button onClick={() => { navigate("/instructor-create-course") }} className="floating-button">+</button>
             </div>
 
         </div>

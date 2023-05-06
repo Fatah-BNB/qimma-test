@@ -1,21 +1,22 @@
 const db = require('../config/db');
 const cloudinary = require('../config/cloudinary')
-function createCourse(course, instructor_id){
-    const {course_title, course_description, course_price, tier_code, field_code} = course
-    return new Promise((resolve, reject)=>{
-       db.query('INSERT INTO course SET ?', {course_title, course_description, course_price, tier_code, field_code, instructor_id}, (error, results)=>{
-        if(error){
-            console.log('error while inserting course', error)
-            reject(error)
-        }else{
-            resolve(results)
-        }
-       })
+
+function createCourse(course, instructor_id) {
+    const { courseTitle, courseDesc, price, tier, field } = course
+    return new Promise((resolve, reject) => {
+        db.query('INSERT INTO course (course_title, course_description, course_price, tier_code, field_code, instructor_id) values (?,?,?,?,?,?)', [courseTitle, courseDesc, price, tier, field, instructor_id], (error, results) => {
+            if (error) {
+                console.log('error while inserting course', error)
+                reject(error)
+            } else {
+                resolve(results)
+            }
+        })
     })
 }
 
-function uploadCoursePicture(course_id, pictureUrl){
-    return new Promise((resolve, reject)=>{
+function uploadCoursePicture(course_id, pictureUrl) {
+    return new Promise((resolve, reject) => {
         cloudinary.uploader.upload(
             pictureUrl, {
             resource_type: "image",
@@ -23,15 +24,15 @@ function uploadCoursePicture(course_id, pictureUrl){
             use_filename: true,
             unique_filename: true
         }, function (error, result) {
-            if(error){
+            if (error) {
                 console.log('error while uploading course picture', error)
                 reject(error);
-            }else{
+            } else {
                 console.log("IMAGE RESULTS ++++++++++>>>", result)
                 resolve(result);
             }
         })
-    }).then((result)=>{
+    }).then((result) => {
         const course_picture = result.secure_url
         return new Promise((resolve, reject) => {
             db.query('UPDATE course SET course_picture = ? where course_id = ?', [course_picture, course_id], (error, results) => {
@@ -43,8 +44,8 @@ function uploadCoursePicture(course_id, pictureUrl){
                 }
             })
         })
-    }) 
+    })
 
 }
 
-module.exports = {createCourse, uploadCoursePicture}
+module.exports = { createCourse, uploadCoursePicture }
