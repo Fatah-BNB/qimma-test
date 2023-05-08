@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Axios from "axios"
 import "./create-course.css"
-import { useFormik } from 'formik'
+import { Form, useFormik } from 'formik'
 import * as Yup from "yup"
 import SideBar from '../side-bar/side-bar'
 import toast, { Toaster } from 'react-hot-toast';
@@ -9,19 +9,27 @@ import { useNavigate } from 'react-router-dom'
 
 export default function CreateCourse() {
     const navigate = useNavigate()
+    const [picture, setPicture] = useState(null)
     const [tiers, setTiers] = useState([])
     const createCourse = (course) => {
-        Axios.post("http://localhost:5000/course/create-course", {
-            courseTitle: course.courseTitle,
-            courseDesc: course.courseDesc,
-            price: course.price,
-            tier: course.tier,
-            field: course.field,
-        }).then(response => {
+        toast.loading("Creating course")
+        const formData = new FormData()
+        formData.append('course_title', course.courseTitle);
+        formData.append('course_description', course.courseDesc);
+        formData.append('course_price', course.price);
+        formData.append('tier_code', course.tier);
+        formData.append('field_code', course.field);
+        formData.append('picture', picture);
+        console.log("picture ===> ", picture)
+        console.log("formdata ===> ", formData)
+        Axios.post("http://localhost:5000/course/create-course", formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(response => {
             console.log(response.data.succMsg)
-            navigate("/instructor-my-courses", {state:{succMsg: response.data.succMsg}})
+            toast.dismiss()
+            setTimeout(() => {navigate("/instructor-my-courses")}, 2000)
+            toast.success(response.data.succMsg)
         }).catch(error => {
             console.log(error.response.data.errMsg)
+            toast.dismiss()
             toast.error(error.response.data.errMsg)
         })
     }
@@ -68,6 +76,11 @@ export default function CreateCourse() {
         <div className='create-course'>
             <Toaster />
             <SideBar />
+            <div className='form-group'>
+                <label for="picture">Choose a banner picture for your course</label>
+                <br />
+                <input type="file" name="picture" accept=".jpg,.jpeg,.png" onChange={(event) => { setPicture(event.target.files[0]) }} />
+            </div>
             <form onSubmit={formik.handleSubmit}>
                 <div className="form-group">
                     <label for="courseTitle">Course title</label>
