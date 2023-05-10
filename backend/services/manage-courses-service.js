@@ -2,7 +2,7 @@ const db = require('../config/db')
 
 function retrieveInstructorCourses(instructor_id) {
     return new Promise((resolve, reject) => {
-        db.query('select * from course where instructor_id = ?', [instructor_id],
+        db.query('select course_title, course_picture, published, course_price, DATE_FORMAT(course_created_at, \'%Y-%m-%d %H:%i:%s\') AS course_created_at from course where instructor_id = ?  ORDER BY course_created_at DESC;', [instructor_id],
             (error, results) => {
                 if (error) {
                     console.log("error while retrieving coures info", error)
