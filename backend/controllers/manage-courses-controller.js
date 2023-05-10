@@ -20,4 +20,14 @@ function publishCourseCntrl(req, res) {
         res.status(400).send({ errMsg: 'cannot publish course ' })
     })
 }
-module.exports = { retrieveInstructorCoursesCntrl, publishCourseCntrl }
+
+function deleteCourseCntrl(req, res){
+    const courseId = req.params.courseId
+    manageCourses.deleteCourse(courseId).then((results) => {
+        res.status(200).send({ succMsg: "course deleted"});
+    }).catch((error) => {
+        res.status(400).send({ errMsg: 'cannot delete course ' })
+    })
+}
+module.exports = { retrieveInstructorCoursesCntrl, publishCourseCntrl,
+    deleteCourseCntrl }

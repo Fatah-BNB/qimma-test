@@ -38,4 +38,18 @@ function publishCourse(course_id, course_instructor_id) {
     })
 }
 
-module.exports = { retrieveInstructorCourses, publishCourse }
+function deleteCourse(course_id){
+    return new Promise((resolve, reject) => {
+        console.log('delete course: ', course_id)
+        db.query("delete from course where course_id = ?", [course_id], (err, res) => {
+            if (err) {
+                console.log("ERROR DELETING COURSE: ", err)
+                reject(err)
+            } else {
+                resolve(res)
+            }
+        })
+    })
+}
+
+module.exports = { retrieveInstructorCourses, publishCourse, deleteCourse }
