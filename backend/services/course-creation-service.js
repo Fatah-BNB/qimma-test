@@ -35,6 +35,20 @@ function createCourse(course, pictureUrl, instructor_id) {
     })
 }
 
+function createCourseSimple(course, instructor_id) {
+    return new Promise((resolve, reject) => {
+        const { course_title, course_description, course_price, tier_code, field_code } = course
+        db.query('INSERT INTO course SET ?', { course_title, course_description, course_price, tier_code, field_code, instructor_id }, (error, results) => {
+            if (error) {
+                console.log('error while inserting course', error)
+                reject(error)
+            } else {
+                resolve(results)
+            }
+        })
+    })
+}
+
 function uploadCoursePicture(course_id, pictureUrl) {
     return new Promise((resolve, reject) => {
         cloudinary.uploader.upload(
@@ -68,4 +82,4 @@ function uploadCoursePicture(course_id, pictureUrl) {
 
 }
 
-module.exports = { createCourse, uploadCoursePicture }
+module.exports = { createCourse, uploadCoursePicture, createCourseSimple }

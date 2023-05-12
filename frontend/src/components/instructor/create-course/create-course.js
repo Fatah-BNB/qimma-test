@@ -19,7 +19,7 @@ export default function CreateCourse() {
         formData.append('course_price', course.price);
         formData.append('tier_code', course.tier);
         formData.append('field_code', course.field);
-        formData.append('picture', picture);
+        picture && formData.append('picture', picture);
         console.log("picture ===> ", picture)
         console.log("formdata ===> ", formData)
         Axios.post("http://localhost:5000/course/create-course", formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(response => {
