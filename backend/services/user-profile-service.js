@@ -1,7 +1,7 @@
 const db = require('../config/db');
 const bcrypt = require('bcrypt');
 const dotenv = require('dotenv');
-const cloudinary = require('cloudinary').v2;
+const cloudinary = require('../config/cloudinary')
 const multer = require('multer');
 const transporter = require('../config/transporter')
 dotenv.config({ path: './.env' });
@@ -142,12 +142,6 @@ function deleteAvatar(userId) {
 }
 
 function uploadAvatar(imageUrl, userId) {
-    // Configure Cloudinary
-    cloudinary.config({
-        cloud_name: 'dbwf4x5ni',
-        api_key: '161138694634421',
-        api_secret: 'hRPiTBnd_0qeUFVwo9o9AgneU8M',
-    });
     // The uploaded image is available in req.file
     return new Promise((resolve, reject) => {
         cloudinary.uploader.upload(imageUrl, {

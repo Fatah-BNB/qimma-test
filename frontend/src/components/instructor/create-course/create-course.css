@@ -1,0 +1,91 @@
+/* create-course.css */
+
+/* Main container styles */
+
+/* Form styles */
+form {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    flex: 3;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
+}
+
+label {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+input,
+textarea,
+select {
+    font-size: 1.2rem;
+    padding: 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.2rem 0.2rem rgba(0, 0, 0, 0.1);
+    outline: none;
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+button[type='submit'] {
+    font-size: 1.2rem;
+    background-color: #FF3366;
+    color: #fff;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+button[type='submit']:hover {
+    background-color: #cc0052;
+}
+
+/* Error message styles */
+.error-message {
+    font-size: 1rem;
+    color: #FF3366;
+    margin-top: 0.5rem;
+}
+
+/* Sidebar styles */
+.side-bar {
+    flex: 1;
+    margin-right: 2rem;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .create-course {
+        flex-direction: column;
+    }
+
+    .side-bar {
+        margin-right: 0;
+        margin-bottom: 2rem;
+    }
+
+    form {
+        padding: 1rem;
+    }
+
+    button[type='submit'] {
+        margin-top: 1rem;
+    }
+}
