@@ -12,6 +12,7 @@ function retrieveInstructorCoursesCntrl(req, res) {
 function publishCourseCntrl(req, res) {
     const instructorId = req.authData.userTypeIds
     const courseId = req.body.courseId
+    console.log("course id is ", courseId)
     manageCourses.publishCourse(courseId, instructorId).then((results) => {
         console.log("RESULTS ===? ", results)
         res.status(200).send({ succMsg: "course published", results: results });
@@ -26,7 +27,7 @@ function deleteCourseCntrl(req, res){
     manageCourses.deleteCourse(courseId).then((results) => {
         res.status(200).send({ succMsg: "course deleted"});
     }).catch((error) => {
-        res.status(400).send({ errMsg: 'cannot delete course ' })
+        res.status(400).send({ errMsg: 'cannot delete course' })
     })
 }
 module.exports = { retrieveInstructorCoursesCntrl, publishCourseCntrl,

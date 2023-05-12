@@ -9,6 +9,14 @@ import toast, { Toaster } from 'react-hot-toast';
 
 export default function CoursesList() {
     const [courses, setCourses] = useState([])
+    const deleteCourse = (courseId) => {
+        Axios.delete(`http://localhost:5000/manage-courses/${courseId}`).then(response => {
+            toast.success(response.data.succMsg)
+            getCourses()
+        }).catch(error => {
+            toast.error(error.response.data.errMsg)
+        })
+    }
     const getCourses = () => {
         Axios.get("http://localhost:5000/manage-courses/my-courses").then(response => {
             console.log("COURSES RESULTS: ", response.data.results)
@@ -21,6 +29,7 @@ export default function CoursesList() {
         Axios.put("http://localhost:5000/manage-courses/publish-course", { courseId }).then(response => {
             console.log(response.data.succMsg)
             toast.success(response.data.succMsg)
+            getCourses()
         }).catch(error => {
             console.log(error.response.data.errMsg)
             toast.error(error.response.data.errMsg)
@@ -38,17 +47,21 @@ export default function CoursesList() {
             <SideBar />
             <Toaster />
             <div className='course-grid'>
-                {courses.length > 1 ?
-                    courses.map((course) => (
-                        <CourseCard
-                            title={course.course_title}
-                            description={course.course_description}
-                            image={course.course_picture ? course.course_picture : BannerPlaceholder}
-                            price={course.course_price}
-                            published={course.published}
-                            publishCourse={() => { publishCourse(course.course_id) }}
-                        />
-                    )) : <h1>My courses</h1>
+                {courses.length > 0 ?
+                    courses.map((course) => {
+                        return (
+                            <CourseCard
+                                date={course.course_created_date}
+                                title={course.course_title}
+                                description={course.course_description}
+                                image={course.course_picture ? course.course_picture : BannerPlaceholder}
+                                price={course.course_price}
+                                published={course.published}
+                                publishCourse={() => { publishCourse(course.course_id) }}
+                                deleteCourse={() => { deleteCourse(course.course_id) }}
+                            />
+                        )
+                    }) : <h1>My courses</h1>
                 }
                 <button onClick={() => { navigate("/instructor-create-course") }} className="floating-button">+</button>
             </div>

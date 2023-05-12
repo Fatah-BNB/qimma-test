@@ -2,7 +2,7 @@ const db = require('../config/db')
 
 function retrieveInstructorCourses(instructor_id) {
     return new Promise((resolve, reject) => {
-        db.query('select course_title, course_picture, published, course_price, DATE_FORMAT(course_created_at, \'%Y-%m-%d %H:%i:%s\') AS course_created_at from course where instructor_id = ?  ORDER BY course_created_at DESC;', [instructor_id],
+        db.query('select course_id, course_title, course_description, course_picture, published, course_price, DATE_FORMAT(course_created_at, \'%Y-%m-%d\') AS course_created_date from course where instructor_id = ?  ORDER BY course_created_at DESC;', [instructor_id],
             (error, results) => {
                 if (error) {
                     console.log("error while retrieving coures info", error)
@@ -24,23 +24,11 @@ function publishCourse(course_id, course_instructor_id) {
                 resolve(res)
             }
         })
-    }).then(results => {
-        return new Promise((resolve, reject) => {
-            db.query("select * from course where course_id = ?", [course_id], (err, res) => {
-                if (err) {
-                    console.log(err)
-                    reject(err)
-                }else{
-                    resolve(res)
-                }
-            })
-        })
     })
 }
 
 function deleteCourse(course_id){
     return new Promise((resolve, reject) => {
-        console.log('delete course: ', course_id)
         db.query("delete from course where course_id = ?", [course_id], (err, res) => {
             if (err) {
                 console.log("ERROR DELETING COURSE: ", err)
