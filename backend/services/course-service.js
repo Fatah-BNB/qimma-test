@@ -119,6 +119,22 @@ function CourseDetails(course_id){
     })
 }
 
+function EnrollCourse(course_id, student_id){
+    const SqlQuery = "insert into student_has_course set ?"
+    const args = {course_id: course_id, student_id: student_id}
+    return new Promise((resolve, reject)=>{
+        db.query(SqlQuery, args, (error, results)=>{
+            if(error){
+                console.log("error while adding course to stduent library", error)
+                reject(error)
+            }else{
+                resolve(results)
+            }
+        })
+    })
+}
+
 
 module.exports = { createCourse, uploadCoursePicture, createCourseSimple,
-    retrievePublishedCourses, CourseDetails }
+    retrievePublishedCourses, CourseDetails, EnrollCourse
+ }

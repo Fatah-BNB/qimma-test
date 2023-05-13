@@ -1,4 +1,4 @@
-const courseCreationService = require('../services/course-creation-service')
+const courseCreationService = require('../services/course-service')
 
 function createCourseCntrl(req, res) {
     instructorId = req.authData.userTypeIds
@@ -48,6 +48,17 @@ function CourseDetailsCntrl (req, res){
     })
 }
 
+function EnrollCourseCntrl (req, res){
+    const stduentId = req.authData.userTypeIds
+    const courseId = req.params.courseId 
+    courseCreationService.EnrollCourse(courseId, stduentId).then((results) => {
+        res.status(200).send({ succMsg: "added course to stduent library"});
+    }).catch((error) => {
+        res.status(500).send({ errMsg: 'Cannot add course to stduent library' })
+    })
+}
+
 
 module.exports = { createCourseCntrl, uploadCoursePictureCntrl,
-    retrievePublishedCoursesCntrl, CourseDetailsCntrl }
+    retrievePublishedCoursesCntrl, CourseDetailsCntrl,
+    EnrollCourseCntrl }
