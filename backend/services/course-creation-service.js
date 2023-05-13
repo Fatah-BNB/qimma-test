@@ -100,5 +100,25 @@ function retrievePublishedCourses(){
     })
 }
 
+function CourseDetails(course_id){
+    return new Promise((resolve, reject)=>{
+        const SqlQuery = "SELECT course.course_title, course.course_picture, course.course_price, course.course_description, DATE_FORMAT(course.course_created_at, \'%Y-%m-%d\') AS course_created_date, "+
+        "user.user_firstName, user.user_lastName "+
+        " FROM course "+
+        "INNER JOIN instructor ON course.instructor_id = instructor.instructor_id "+
+        "INNER JOIN user ON instructor.user_id = user.user_id "+
+        "WHERE course.course_id = ?; "
+        db.query(SqlQuery, [course_id], (error, results)=>{
+            if(error){
+                console.log("error while retrieveing course details", error)
+                reject(error)
+            }else{
+                resolve(results)
+            }
+        })
+    })
+}
+
+
 module.exports = { createCourse, uploadCoursePicture, createCourseSimple,
-    retrievePublishedCourses }
+    retrievePublishedCourses, CourseDetails }

@@ -39,5 +39,15 @@ function retrievePublishedCoursesCntrl (req, res){
     })
 }
 
+function CourseDetailsCntrl (req, res){
+    const courseId = req.params.courseId
+    courseCreationService.CourseDetails(courseId).then((results) => {
+        res.status(200).send({ succMsg: "retrieve course details", results: results});
+    }).catch((error) => {
+        res.status(500).send({ errMsg: 'Cannot retrieve course details' })
+    })
+}
+
+
 module.exports = { createCourseCntrl, uploadCoursePictureCntrl,
-    retrievePublishedCoursesCntrl }
+    retrievePublishedCoursesCntrl, CourseDetailsCntrl }
