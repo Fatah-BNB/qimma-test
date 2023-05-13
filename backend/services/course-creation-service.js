@@ -82,4 +82,23 @@ function uploadCoursePicture(course_id, pictureUrl) {
 
 }
 
-module.exports = { createCourse, uploadCoursePicture, createCourseSimple }
+function retrievePublishedCourses(){
+    return new Promise((resolve, reject)=>{
+        const SqlQuery = "SELECT course.course_title, course.course_picture, course.course_price, user.user_firstName, user.user_lastName "+
+        " FROM course "+
+        "INNER JOIN instructor ON course.instructor_id = instructor.instructor_id "+
+        "INNER JOIN user ON instructor.user_id = user.user_id "+
+        "WHERE published = 1; "
+        db.query(SqlQuery, (error, results)=>{
+            if(error){
+                console.log("error while retrieveing published courses", error)
+                reject(error)
+            }else{
+                resolve(results)
+            }
+        })
+    })
+}
+
+module.exports = { createCourse, uploadCoursePicture, createCourseSimple,
+    retrievePublishedCourses }

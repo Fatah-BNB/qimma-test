@@ -31,4 +31,13 @@ function uploadCoursePictureCntrl(req, res) {
 
 }
 
-module.exports = { createCourseCntrl, uploadCoursePictureCntrl }
+function retrievePublishedCoursesCntrl (req, res){
+    courseCreationService.retrievePublishedCourses().then((results) => {
+        res.status(200).send({ succMsg: "retrieve published courses ", results: results});
+    }).catch((error) => {
+        res.status(500).send({ errMsg: 'Cannot retrieve published courses' })
+    })
+}
+
+module.exports = { createCourseCntrl, uploadCoursePictureCntrl,
+    retrievePublishedCoursesCntrl }
