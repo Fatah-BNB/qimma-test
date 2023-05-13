@@ -1,0 +1,9 @@
+const StudentController = require('../controllers/StudentController');
+const checkToken = require('../middleware/checkToken')
+const express = require('express');
+
+const router = express.Router();
+
+
+router.get('/enrolled-courses',checkToken.verifyToken('student'), StudentController.retrieveEnrolledCoursesCntrl);
+module.exports = router;
