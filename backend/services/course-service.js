@@ -88,7 +88,7 @@ function retrievePublishedCourses(){
         " FROM course "+
         "INNER JOIN instructor ON course.instructor_id = instructor.instructor_id "+
         "INNER JOIN user ON instructor.user_id = user.user_id "+
-        "WHERE published = 1; "
+        "WHERE published = 1 order by course_created_at desc"
         db.query(SqlQuery, (error, results)=>{
             if(error){
                 console.log("error while retrieveing published courses", error)
