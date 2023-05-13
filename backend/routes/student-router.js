@@ -6,4 +6,5 @@ const router = express.Router();
 
 
 router.get('/enrolled-courses',checkToken.verifyToken('student'), StudentController.retrieveEnrolledCoursesCntrl);
+router.put('/rate-course/:courseId',checkToken.verifyToken('student'), StudentController.rateCourseCntrl);
 module.exports = router;

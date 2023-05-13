@@ -3,7 +3,6 @@ const db = require('../config/db')
 function retrieveEnrolledCourses(student_id) {
     const SqlQuery = "select course_id from student_has_course where student_id = ?"
     return new Promise((resolve, reject) => {
-        console.log("1 st promise")
         db.query(SqlQuery, [student_id], (error, results) => {// retrieve enrolled courses for specific student
             if (error) {
                 console.log('error while retrieving enrolled courses', error)
@@ -46,4 +45,18 @@ function retrieveEnrolledCourses(student_id) {
     })
 }
 
-module.exports = { retrieveEnrolledCourses }
+function rateCourse(course_rating, course_id, student_id){
+    return new Promise((resolve, reject)=>{
+        const SqlQuery = "update student_has_course set course_rating = ? where course_id = ? and student_id = ?"
+        db.query(SqlQuery, [course_rating, course_id, student_id], (error, results)=>{
+            if(error){
+                console.log("error while updating student_has_course", error)
+                reject(error)
+            }else{
+                resolve(results)
+            }
+        })
+    })
+}
+
+module.exports = { retrieveEnrolledCourses, rateCourse }

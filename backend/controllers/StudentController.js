@@ -11,4 +11,15 @@ function retrieveEnrolledCoursesCntrl(req, res) {
 
 }
 
-module.exports = { retrieveEnrolledCoursesCntrl}
+function rateCourseCntrl(req, res){
+    const studentId = req.authData.userTypeIds
+    const courseId = req.params.courseId
+    const courseRating = req.body.course_rating
+    studentService.rateCourse(courseRating, courseId, studentId).then((results) => {
+        res.status(200).send({ succMsg: "course rated"});
+    }).catch((error) => {
+        res.status(500).send({ errMsg: "Cannot rate course"});
+    });
+}
+
+module.exports = { retrieveEnrolledCoursesCntrl, rateCourseCntrl}
