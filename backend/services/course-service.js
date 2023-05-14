@@ -84,7 +84,7 @@ function uploadCoursePicture(course_id, pictureUrl) {
 
 function retrievePublishedCourses(){
     return new Promise((resolve, reject)=>{
-        const SqlQuery = "SELECT course.course_title, course.course_picture, course.course_price, user.user_firstName, user.user_lastName "+
+        const SqlQuery = "SELECT course.course_id, course.course_title, course.course_picture, course.course_price, user.user_firstName, user.user_lastName "+
         " FROM course "+
         "INNER JOIN instructor ON course.instructor_id = instructor.instructor_id "+
         "INNER JOIN user ON instructor.user_id = user.user_id "+
@@ -107,7 +107,7 @@ function CourseDetails(course_id){
         " FROM course "+
         "INNER JOIN instructor ON course.instructor_id = instructor.instructor_id "+
         "INNER JOIN user ON instructor.user_id = user.user_id "+
-        "WHERE course.course_id = ?; "
+        "WHERE course.course_id = ?"
         db.query(SqlQuery, [course_id], (error, results)=>{
             if(error){
                 console.log("error while retrieveing course details", error)

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import "./home.css"
 import Axios from "axios"
 import NavBar from "../../user/navbar/navbar"
@@ -7,6 +8,14 @@ import BannerPlaceholder from "../../../icons/course_banner_placeholder.png"
 import ReactLoading from 'react-loading';
 
 export default function Home() {
+    const navigate = useNavigate()
+    const goToCourse = (courseId) => {
+        navigate("/course-details", {
+            state: {
+                courseId: courseId
+            }
+        })
+    }
     const [courses, setCourses] = useState([])
     const [loading, setLoading] = useState(true)
     const getPublishedCourses = () => {
@@ -39,6 +48,7 @@ export default function Home() {
                                 price={course.course_price}
                                 instructor={course.user_firstName + " " + course.user_lastName}
                                 onEnroll={() => alert(`Enrolling in ${course.course_title}`)}
+                                goToCourse={() => {goToCourse(course.course_id)}}
                             />
                         ))}
                     </div>

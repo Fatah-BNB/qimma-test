@@ -34,6 +34,12 @@
     font-size: 1.5rem;
 }
 
+.course-card__title:hover {
+    color: #007bff;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .course-card__price {
     margin-bottom: 25px;
     font-size: 1.2rem;
