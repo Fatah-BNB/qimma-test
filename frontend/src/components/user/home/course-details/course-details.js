@@ -46,8 +46,8 @@ export default function CourseDetails() {
                 <div className="info">
                     <p>Instructor: {course.user_firstName + " " + course.user_lastName}</p>
                     <p>Creation Date: {course.course_created_date}</p>
-                    <p>Tier: {course.tier}</p>
-                    <p>Field: {course.field}</p>
+                    <p>Tier: {course.tier_name}</p>
+                    <p>Field: {course.field_name}</p>
                 </div>
                 <div className="enroll">
                     <p>Price: {course.course_price} DA</p>
