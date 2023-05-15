@@ -102,9 +102,11 @@ function retrievePublishedCourses(){
 
 function CourseDetails(course_id){
     return new Promise((resolve, reject)=>{
-        const SqlQuery = "SELECT course.course_title, course.course_picture, course.course_price, course.course_description, DATE_FORMAT(course.course_created_at, \'%Y-%m-%d\') AS course_created_date, "+
+        const SqlQuery = "SELECT course.course_title, course.course_picture, course.course_price, course.course_description, tier.tier_name, field.field_name, DATE_FORMAT(course.course_created_at, \'%Y-%m-%d\') AS course_created_date, "+
         "user.user_firstName, user.user_lastName "+
-        " FROM course "+
+        "FROM course "+
+        "INNER JOIN tier ON course.tier_code = tier.tier_code "+
+        "INNER JOIN field ON course.field_code = field.field_code "+
         "INNER JOIN instructor ON course.instructor_id = instructor.instructor_id "+
         "INNER JOIN user ON instructor.user_id = user.user_id "+
         "WHERE course.course_id = ?"
