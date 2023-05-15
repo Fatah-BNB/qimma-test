@@ -18,7 +18,7 @@ function retrieveEnrolledCourses(student_id) {
                 for (let i = 0; i < FiResults.length; i++) {
                     const course_id = FiResults[i].course_id
                     const courseDetailsPromise = await new Promise((resolve, reject) => {
-                        const SqlQuery = "SELECT course.course_title, course.course_picture, course.course_price, user.user_firstName, user.user_lastName " +
+                        const SqlQuery = "SELECT course.course_id, course.course_title, course.course_picture, course.course_price, user.user_firstName, user.user_lastName " +
                             " FROM course " +
                             "INNER JOIN instructor ON course.instructor_id = instructor.instructor_id " +
                             "INNER JOIN user ON instructor.user_id = user.user_id " +
