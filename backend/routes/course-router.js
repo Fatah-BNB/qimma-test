@@ -9,5 +9,5 @@ const router = express.Router();
 router.post('/create-course',checkToken.verifyToken('instructor'), configCoursePictureStorage.single('picture'), courseController.createCourseCntrl);
 router.get('/published-courses', courseController.retrievePublishedCoursesCntrl);
 router.get('/:courseId/course-details', courseController.CourseDetailsCntrl);
-router.get('/:courseId/enroll-course', checkToken.verifyToken('student'), courseController.EnrollCourseCntrl);
+router.post('/:courseId/enroll-course', checkToken.verifyToken('student'), courseController.EnrollCourseCntrl);
 module.exports = router;
