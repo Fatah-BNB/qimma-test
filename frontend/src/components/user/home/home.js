@@ -52,16 +52,20 @@ export default function Home() {
                         <ReactLoading type={'spin'} color={'#007bff'} height={100} width={100} />
                     </div> :
                     <div className="course-list">
-                        {courses.map(course => (
-                            <PublishedCourseCard
-                                bannerImg={course.course_picture ? course.course_picture : BannerPlaceholder}
-                                title={course.course_title}
-                                price={course.course_price}
-                                instructor={course.user_firstName + " " + course.user_lastName}
-                                onEnroll={() => enroll(course.course_id)}
-                                goToCourse={() => { goToCourse(course.course_id) }}
-                            />
-                        ))}
+                        {courses.map(course => {
+                            return (
+                                <PublishedCourseCard
+                                    id={course.course_id}
+                                    bannerImg={course.course_picture ? course.course_picture : BannerPlaceholder}
+                                    title={course.course_title}
+                                    price={course.course_price}
+                                    instructor={course.user_firstName + " " + course.user_lastName}
+                                    onEnroll={() => enroll(course.course_id)}
+                                    goToCourse={() => { goToCourse(course.course_id) }}
+                                />
+                            )
+                        }
+                        )}
                     </div>
             }
         </div>

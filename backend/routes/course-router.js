@@ -10,4 +10,5 @@ router.post('/create-course',checkToken.verifyToken('instructor'), configCourseP
 router.get('/published-courses', courseController.retrievePublishedCoursesCntrl);
 router.get('/:courseId/course-details', courseController.CourseDetailsCntrl);
 router.post('/:courseId/enroll-course', checkToken.verifyToken('student'), courseController.EnrollCourseCntrl);
+router.get('/:courseId/enrolled-course', checkToken.verifyToken('student'), courseController.CheckEnrolledCourse);
 module.exports = router;

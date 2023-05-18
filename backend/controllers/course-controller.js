@@ -31,34 +31,47 @@ function uploadCoursePictureCntrl(req, res) {
 
 }
 
-function retrievePublishedCoursesCntrl (req, res){
+function retrievePublishedCoursesCntrl(req, res) {
     courseCreationService.retrievePublishedCourses().then((results) => {
-        res.status(200).send({ succMsg: "retrieve published courses ", results: results});
+        res.status(200).send({ succMsg: "retrieve published courses ", results: results });
     }).catch((error) => {
         res.status(500).send({ errMsg: 'Cannot retrieve published courses' })
     })
 }
 
-function CourseDetailsCntrl (req, res){
+function CourseDetailsCntrl(req, res) {
     const courseId = req.params.courseId
     courseCreationService.CourseDetails(courseId).then((results) => {
-        res.status(200).send({ succMsg: "retrieve course details", results: results});
+        res.status(200).send({ succMsg: "retrieve course details", results: results });
     }).catch((error) => {
         res.status(500).send({ errMsg: 'Cannot retrieve course details' })
     })
 }
 
-function EnrollCourseCntrl (req, res){
+function EnrollCourseCntrl(req, res) {
     const stduentId = req.authData.userTypeIds
-    const courseId = req.params.courseId 
+    const courseId = req.params.courseId
     courseCreationService.EnrollCourse(courseId, stduentId).then((results) => {
-        res.status(200).send({ succMsg: "added course to stduent library"});
+        res.status(200).send({ succMsg: "added course to stduent library" });
     }).catch((error) => {
         res.status(500).send({ errMsg: 'Cannot add course to stduent library' })
     })
 }
 
+function CheckEnrolledCourse(req, res) {
+    const stduentId = req.authData.userTypeIds
+    const courseId = req.params.courseId
+    courseCreationService.CheckEnrolledCourse(courseId, stduentId).then((results) => {
+        console.log(results)
+        res.status(200).send({ results: results }); 
+    }).catch((error) => {
+        res.status(500).send({errMsg: error})
+    })
+}
 
-module.exports = { createCourseCntrl, uploadCoursePictureCntrl,
+
+module.exports = {
+    createCourseCntrl, uploadCoursePictureCntrl,
     retrievePublishedCoursesCntrl, CourseDetailsCntrl,
-    EnrollCourseCntrl }
+    EnrollCourseCntrl, CheckEnrolledCourse
+}
