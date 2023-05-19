@@ -13,6 +13,7 @@ import InstrcutorDashboard from "./components/instructor/dashboard";
 import CreateCourse from "./components/instructor/create-course/create-course";
 import CoursesList from "./components/instructor/my-courses/courses-list";
 import CourseLibrary from "./components/student/course-library/course-library";
+import CourseDetails from "./components/user/home/course-details/course-details";
 import AdminDashboard from "./components/admin/dashboard/admin-dashboard";
 import ErrorPage from "./errPage";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -57,6 +58,8 @@ function App() {
           <Route path="/instructor-create-course" element={<ProtectedRoute isLogged={isLogged} child={<CreateCourse />} redirect="/login" />} />\
           
           <Route path="/course-library" element={<ProtectedRoute isLogged={isLogged} child={<CourseLibrary />} redirect="/login" />} />\
+
+          <Route path="/course-details" element={<ProtectedRoute isLogged={isLogged} child={<CourseDetails />} redirect="/login" />} />\
 
           <Route path="/*" element={<ErrorPage />} />
         </Routes>
