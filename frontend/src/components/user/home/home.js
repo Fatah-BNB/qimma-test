@@ -10,15 +10,6 @@ import toast, { Toaster } from "react-hot-toast"
 
 export default function Home() {
     const navigate = useNavigate()
-    const enroll = (courseId) => {
-        Axios.post(`http://localhost:5000/course/${courseId}/enroll-course`).then(response => {
-            console.log(response.data.succMsg)
-            toast.success(response.data.succMsg)
-        }).catch(error => {
-            console.log(error.response.data.errMsg)
-            toast.error(error.response.data.errMsg)
-        })
-    }
     const goToCourse = (courseId) => {
         navigate("/course-details", {
             state: {
@@ -60,7 +51,6 @@ export default function Home() {
                                     title={course.course_title}
                                     price={course.course_price}
                                     instructor={course.user_firstName + " " + course.user_lastName}
-                                    onEnroll={() => enroll(course.course_id)}
                                     goToCourse={() => { goToCourse(course.course_id) }}
                                 />
                             )

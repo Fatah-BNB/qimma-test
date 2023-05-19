@@ -1,12 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import "./course-details.css"
 import Axios from "axios"
 import ReactLoading from 'react-loading';
 import BannerPlaceholder from "../../../../icons/course_banner_placeholder.png"
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function CourseDetails() {
     const location = useLocation()
+    const navigate = useNavigate()
+    const [enrolled, setEnrolled] = useState(false)
+    const CheckEnrolledCourse = (id) => {
+        Axios.get(`http://localhost:5000/course/${id}/enrolled-course`).then(response => {
+            console.log("is enrolled ===> ", response.data.results[0])
+            if (response.data.results[0].counts > 0) {
+                setEnrolled(true)
+            } else {
+                setEnrolled(false)
+            }
+        }).catch(error => {
+            console.log(error.response.data.errMsg)
+        })
+    }
+    const enroll = (courseId) => {
+        Axios.post(`http://localhost:5000/course/${courseId}/enroll-course`).then(response => {
+            console.log(response.data.succMsg)
+            toast.success(response.data.succMsg)
+            setEnrolled(true)
+        }).catch(error => {
+            console.log(error.response.data.errMsg)
+            toast.error(error.response.data.errMsg)
+        })
+    }
     const getCourse = (courseId) => {
         Axios.get(`http://localhost:5000/course/${courseId}/course-details`).then(response => {
             console.log(response.data.succMsg)
@@ -18,15 +43,17 @@ export default function CourseDetails() {
     }
     const [course, setCourse] = useState(null)
     useEffect(() => {
-        if (location.state.courseId) {
+        if (location.state && location.state.courseId) {
             console.log(location.state.courseId)
             getCourse(location.state.courseId)
+            CheckEnrolledCourse(location.state.courseId)
         }
-    }, [])
+    }, [location.state.courseId])
 
     useEffect(() => {
         console.log("course is ", course)
-    }, [course])
+        console.log("enrolled state is ", enrolled)
+    }, [enrolled])
 
     if (!course) {
         return (
@@ -37,6 +64,7 @@ export default function CourseDetails() {
     }
     return (
         <div className="course-details">
+            <Toaster />
             <div className="banner">
                 <img src={course.course_picture ? course.course_picture : BannerPlaceholder} alt={"title"} />
             </div>
@@ -51,7 +79,7 @@ export default function CourseDetails() {
                 </div>
                 <div className="enroll">
                     <p>Price: {course.course_price} DA</p>
-                    <button className="enroll-button">Enroll</button>
+                    {enrolled === false ? <button onClick={() => { enroll(course.course_id) }} className="enroll-button">Enroll</button> : <button onClick={() => {navigate("/course-library")}} className="enroll-button">Go to library</button>}
                 </div>
             </div>
         </div>
