@@ -1,0 +1,71 @@
+.course-card {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    position: relative;
+    z-index: 1;
+}
+
+.course-card:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+}
+
+.course-card__image-container {
+    height: 200px;
+    overflow: hidden;
+}
+
+.course-card__image {
+    width: 100%;
+    height: auto;
+}
+
+.course-card__content {
+    padding: 10px;
+    text-align: center;
+}
+
+.course-card__title {
+    margin-bottom: 25px;
+    margin-top: 0;
+    font-size: 1.5rem;
+}
+
+.course-card__title:hover {
+    color: #007bff;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.course-card__price {
+    margin-bottom: 25px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.course-card__instructor {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.course-card__enroll-button {
+    margin-top: 50px;
+    display: block;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 18px;
+    border-radius: 5px;
+    text-decoration: none;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease-in-out;
+}
+
+.course-card__enroll-button:hover {
+    background-color: #3e8e41;
+}
