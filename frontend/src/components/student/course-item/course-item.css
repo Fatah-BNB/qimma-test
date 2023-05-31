@@ -10,24 +10,23 @@
     align-items: center;
     border: 1px solid #ccc;
     border-radius: 33px;
+    transition: background-color 0.5s ease, box-shadow 0.5s ease;
 }
 
 .course-item:hover {
     background-color: #007bff;
-    transition: 0.5s ease;
-    box-shadow:  10px 10px 100px 0 rgb(136, 134, 134);
+    box-shadow: 10px 10px 100px 0 rgb(136, 134, 134);
 }
 
 .course-item:hover .course-image {
     width: 35%;
-    transition: 0.3s ease;
 }
 
 .course-image {
     width: 30%;
     height: 100%;
     margin-right: 10px;
-    transition: 0.3s ease;
+    transition: width 0.3s ease;
 }
 
 .course-details {
@@ -35,21 +34,14 @@
     flex-direction: column;
 }
 
-.course-title {
-    margin: 0;
-    margin-bottom: 5px;
-}
-
+.course-title,
 .course-instructor {
     margin: 0;
+    margin-bottom: 5px;
+    transition: color 0.3s ease;
 }
 
-.course-item:hover .course-title {
-    color: white;
-    transition: 0.3s ease;
-}
-
+.course-item:hover .course-title,
 .course-item:hover .course-instructor {
     color: white;
-    transition: 0.3s ease;
 }

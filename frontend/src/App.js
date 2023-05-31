@@ -20,7 +20,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { useSelector, useDispatch } from "react-redux";
 import { checkLoginStatus } from "./slices/user-slice";
 import { checkAdminLoginStatus } from "./slices/admin-slice";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
+import './App.css'
 
 function App() {
   const dispatch = useDispatch()
