@@ -21,6 +21,8 @@ export default function NavBar() {
                     {isLogged && <li><Link to="/home">Home</Link></li>}
                     {!isLogged && <li><Link to="/login">Login</Link></li>}
                     {isLogged && <li><Link to="/profile">Profile</Link></li>}
+                    {isLogged && <li><Link to="/course-library">My courses</Link></li>}
+                    {isLogged && <li><Link to="/instructor-dashboard">Instructor space</Link></li>}
                     {isLogged && <li><Link to="/logout" >logout</Link></li>}
                     {!isLogged && <li><Link to="/register">Register</Link></li>}
                 </ul>

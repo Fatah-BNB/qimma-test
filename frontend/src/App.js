@@ -12,13 +12,16 @@ import Email_comfirmed from "./components/user/email-confirmation/comfirmed-emai
 import InstrcutorDashboard from "./components/instructor/dashboard";
 import CreateCourse from "./components/instructor/create-course/create-course";
 import CoursesList from "./components/instructor/my-courses/courses-list";
+import CourseLibrary from "./components/student/course-library/course-library";
+import CourseDetails from "./components/user/home/course-details/course-details";
 import AdminDashboard from "./components/admin/dashboard/admin-dashboard";
 import ErrorPage from "./errPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useSelector, useDispatch } from "react-redux";
 import { checkLoginStatus } from "./slices/user-slice";
 import { checkAdminLoginStatus } from "./slices/admin-slice";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
+import './App.css'
 
 function App() {
   const dispatch = useDispatch()
@@ -54,6 +57,10 @@ function App() {
           <Route path="/instructor-dashboard" element={<ProtectedRoute isLogged={isLogged} child={<InstrcutorDashboard />} redirect="/login" />} />\
           <Route path="/instructor-my-courses" element={<ProtectedRoute isLogged={isLogged} child={<CoursesList />} redirect="/login" />} />\
           <Route path="/instructor-create-course" element={<ProtectedRoute isLogged={isLogged} child={<CreateCourse />} redirect="/login" />} />\
+          
+          <Route path="/course-library" element={<ProtectedRoute isLogged={isLogged} child={<CourseLibrary />} redirect="/login" />} />\
+
+          <Route path="/course-details" element={<ProtectedRoute isLogged={isLogged} child={<CourseDetails />} redirect="/login" />} />\
 
           <Route path="/*" element={<ErrorPage />} />
         </Routes>

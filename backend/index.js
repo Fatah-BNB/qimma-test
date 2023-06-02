@@ -3,8 +3,9 @@ const db = require("./config/db");
 const authRouter = require('./routes/user-auth-router');
 const adminRouter = require('./routes/admin-router')
 const profileRouter = require('./routes/user-profile-router')
-const courseRouter = require('./routes/create-course-router')
+const courseRouter = require('./routes/course-router')
 const manageCoursesRouter = require('./routes/manage-courses')
+const student = require('./routes/student-router')
 const cors = require('cors');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
@@ -37,6 +38,7 @@ app.use('/admin', adminRouter);
 app.use('/profile', profileRouter)
 app.use('/course', courseRouter)
 app.use('/manage-courses', manageCoursesRouter)
+app.use('/student', student)
 
 app.listen(5000, () => {
   console.log("Server started on Port 5000");
